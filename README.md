@@ -1,10 +1,10 @@
 # 🛠️ Arquitectura y Estructura del Sistema (MVC)
 
-Este documento detalla la distribución de paquetes, clases, atributos y métodos que componen el núcleo del Sistema de Despacho Automático de Emergencias Viales 24/7. El diseño sigue estrictamente el patrón **Modelo-Vista-Controlador (MVC)** e implementa estructuras lineales dinámicas propias para prescindir por completo del framework *Java Collections*.
+Este documento detalla la distribución completa de paquetes, clases, atributos y métodos que componen el núcleo del Sistema de Despacho Automático de Emergencias Viales. El diseño sigue estrictamente el patrón **Modelo-Vista-Controlador (MVC)** e implementa estructuras lineales dinámicas propias para prescindir por completo del framework *Java Collections*.
 
 ---
 
-## 📦 1. Paquete: `co.ciencias.finalcc.model`
+## 📦 1. Paquete: `co.ciencias.finalcc.model` (y `co.ciencias.finalcc2.model`)
 Contiene las entidades de negocio y las estructuras de datos fundamentales desarrolladas a medida mediante nodos y punteros.
 
 ### 📄 `Nodo<T>`
@@ -33,7 +33,7 @@ Estructura lineal genérica simplemente enlazada que permite coleccionar dinámi
   * *(aquí getters y setters de: cabeza)*
 
 ### 📄 `Cola<T>`
-Estructura lineal genérica que opera bajo la política FIFO (*First-In, First-Out*), ideal para el procesamiento ordenado de flujos continuos.
+Estructura lineal genérica que opera bajo la política FIFO (*First-In, First-Out*), ideal para el procesamiento ordenado de flujos continuos como las colas de revisión de insumos.
 * **Atributos:**
   * `private Nodo<T> frente`: Puntero al elemento listo para ser extraído.
   * `private Nodo<T> fin`: Puntero al último elemento ingresado.
@@ -44,6 +44,18 @@ Estructura lineal genérica que opera bajo la política FIFO (*First-In, First-O
   * `public T verFrente()`: Consulta el dato al frente de la cola sin removerlo.
   * `public boolean esVacia()`: Retorna verdadero si no contiene nodos.
   * *(aquí getters y setters de: tamanio, nodoFrente)*
+
+### 📄 `Pila<T>`
+Estructura lineal genérica de tipo LIFO (*Last-In, First-Out*) que modela el almacenamiento vertical apilable, utilizada para las estanterías de kits listos.
+* **Atributos:**
+  * `private Nodo<T> cima`: Puntero al elemento superior en la cima de la pila.
+  * `private int tamanio`: Contador con la cantidad de objetos apilados.
+* **Métodos:**
+  * `public void push(T valor)`: Apila un nuevo elemento en la cima de la estructura.
+  * `public T pop()`: Remueve y retorna el elemento ubicado en la cima.
+  * `public T peek()`: Inspecciona visualmente el elemento superior sin extraerlo.
+  * `public boolean esVacia()`: Verifica si la pila carece de datos.
+  * *(aquí getters y setters de: tamanio)*
 
 ### 📄 `ColaPrioridad`
 Estructura especializada adaptada para objetos de tipo `SolicitudServicio`. Reubica e inserta los elementos de manera interna ordenándolos automáticamente por la gravedad de su tipo de emergencia (de mayor a menor jerarquía).
@@ -67,6 +79,37 @@ Entidad inmutable que representa al usuario o afectado que reporta el incidente 
   * `public Cliente(String nombre, String telefono)`: Constructor que inicializa los datos e inyecta el ID único.
   * `public String toString()`: Cadena formateada legible de la entidad.
   * *(aquí getters y setters de: nombre, telefono, id)*
+
+### 📄 `Kit`
+Clase que modela los kits de herramientas o insumos técnicos requeridos para solucionar percances viales.
+* **Atributos:**
+  * `private String nombre`: Descripción o código de identificación del kit.
+  * `private boolean completo`: Estado de integridad física del kit (listo o incompleto).
+* **Métodos:**
+  * `public Kit(String nombre)`: Inicializa el kit con su nombre técnico y lo define con estado incompleto por defecto hasta pasar por revisión.
+  * *(aquí getters y setters de: nombre, completo)*
+
+### 📄 `UnidadServicio`
+Entidad que representa a las unidades automotrices físicas (ambulancias, grúas, etc.) dispuestas en las estaciones.
+* **Atributos:**
+  * `private TipoUnidad tipo`: Categoría del vehículo.
+  * `private EstadoUnidad estado`: Disponibilidad actual del recurso.
+  * `private int zonaPuesto`: Identificador de la central a la que pertenece.
+  * `private String codigo`: Placa o código de identificación vehicular interna.
+* **Métodos:**
+  * `public UnidadServicio(TipoUnidad tipo, EstadoUnidad estado, int zonaPuesto, String codigo)`: Instancia la unidad operativa.
+  * *(aquí getters y setters de: tipo, estado, zonaPuesto, codigo)*
+
+### 📄 `Tecnico`
+Entidad encargada de representar a los operarios, médicos o brigadistas asignados a las misiones de rescate.
+* **Atributos:**
+  * `private String nombre`: Nombre o código identificador del especialista.
+  * `private Especialidad especialidad`: Área técnica de formación del operario.
+  * `private EstadoTecnico estado`: Disponibilidad operativa actual.
+  * `private int zonaPuesto`: Puesto base de operaciones.
+* **Métodos:**
+  * `public Tecnico(String nombre, Especialidad especialidad, EstadoTecnico estado, int zonaPuesto)`: Registra al operario técnico en la base.
+  * *(aquí getters y setters de: nombre, especialidad, estado, zonaPuesto)*
 
 ### 📄 `PuntoVia`
 Componente geométrico tridimensional simplificado que valida si las coordenadas $(X, Y)$ ingresadas pertenecen espacialmente a la red vial (anillos concéntricos o rectas radiales).
@@ -145,12 +188,34 @@ Tipifica de manera robusta los estados lógicos y clasificaciones estáticas del
 
 ---
 
-## ⚙️ 3. Paquete: `co.ciencias.finalcc.model.gestores`
+## ⚙️ 3. Paquete: `co.ciencias.finalcc.model.gestores` (y `co.ciencias.finalcc2.model.gestores`)
 Módulos funcionales de control operativo interno que manipulan el estado global del modelo a través del patrón **Singleton**.
 
-* **`GestorSolicitudes`**: Administra la creación de llamadas, interactúa con la calculadora de zonas e instruye el despacho de unidades en las centrales. Conserva una lista global histórica de servicios procesados.
-* **`GestorRecursos`**: Aloja y expone la matriz fija de las cuatro centrales (`PuestoAtencion[4]`). Centraliza búsquedas, filtrados de stock y cambios de estado de operarios y vehículos.
-* **`GestorOperaciones`**: Administra una estructura de tipo Pila personalizada para almacenar los logs cronológicos continuos del sistema (*Caja Negra*).
+### 📄 `GestorSolicitudes`
+* **Descripción:** Concentra la creación global de emergencias, vincula a `ZonaCalculadora` para asignar zonas e instruye el despacho inmediato. Mantiene además una lista histórica de servicios concluidos.
+* **Atributos, métodos y getters de:** Instancia global y lista de solicitudes.
+
+### 📄 `GestorRecursos`
+* **Descripción:** Aloja y expone la matriz fija de las cuatro centrales (`PuestoAtencion[4]`). Centraliza búsquedas, filtrados de stock de grúas/ambulancias y cambios de estado de operarios.
+* **Atributos, métodos y getters de:** Estructura de puestos de atención.
+
+### 📄 `GestorOperaciones`
+* **Descripción:** Administra una estructura de tipo Pila personalizada para almacenar los logs cronológicos continuos del sistema (*Caja Negra*).
+* **Atributos, métodos y getters de:** Historial de operaciones.
+
+### 📄 `GestorKits`
+* **Descripción:** Gestiona el inventario centralizado de herramientas mediante un flujo combinado de estructuras. Los kits en reparación entran a una `Cola` de revisión técnica y, al quedar completos, se apilan en una `Pila` de estantería listos para ser retirados de inmediato por las patrullas. Opera bajo el patrón **Singleton**.
+* **Atributos:**
+  * `private static GestorKits instancia`: Instancia única universal para acceso global seguro.
+  * `private final Cola<Kit> zonaRevision`: Cola estructurada FIFO para controlar el orden de reparación técnica de los kits.
+  * `private final Pila<Kit> estanteriaListos`: Estructura LIFO que almacena de forma vertical los kits aptos para despacho inmediato.
+* **Métodos:**
+  * `public static GestorKits getInstancia()`: Devuelve o crea la instancia única global del gestor.
+  * `private void inicializarInventario()`: Inicializa el sistema inyectando kits mecánicos, hidráulicos y eléctricos base.
+  * `public void registrarKitEnRevision(Kit kit)`: Recibe un kit gastado en servicio, invalida su bandera de integridad y lo encola en talleres.
+  * `public Kit liberarKitDeRevision()`: Desencola el primer kit reparado en cola, cambia su estado a completo y lo apila en la estantería de listos.
+  * `public Kit retirarKitParaServicio()`: Desapila el kit de la cima de la estantería para asignarlo a una patrulla de auxilio vial.
+  * *(aquí getters y setters de: zonaRevision, estanteriaListos)*
 
 ---
 
@@ -169,7 +234,7 @@ Contenedor temporal que simula el tránsito y conteo regresivo de un vehículo d
   * `private final SolicitudServicio solicitud`: El caso asignado en ruta.
   * `private int segundosRestantes`: Temporizador de viaje aleatorio calculado al salir (entre 15 y 30 segundos).
 * **Métodos:**
-  * `public void decrementarSegundos()`: Resta un segundo al temporizador por cada ciclo del reloj.
+  * `public void miembro decrementarSegundos()`: Resta un segundo al temporizador por cada ciclo del reloj.
   * *(aquí getters y setters de: solicitud, segundosRestantes)*
 
 ### 📄 `MonitoreoMantenimiento`
