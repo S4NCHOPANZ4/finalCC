@@ -1,0 +1,37 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f5f7; color: #1d1d1f; padding: 20px; }
+        .container { display: flex; gap: 20px; max-width: 1500px; margin: 0 auto; height: calc(100vh - 40px); }
+        .form-panel { width: 320px; background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 12px; }
+        .form-panel h2 { font-size: 1.4rem; color: #007aff; border-bottom: 2px solid #f5f5f7; padding-bottom: 10px; margin-bottom: 5px; }
+        .field { display: flex; flex-direction: column; gap: 4px; }
+        .field label { font-size: 0.82rem; font-weight: 600; color: #86868b; }
+        .field input, .field select, .field textarea { padding: 9px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 0.95rem; background: #f5f5f7; outline: none; transition: border 0.2s; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: #007aff; background: #ffffff; }
+        .btn-registrar { background: #007aff; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+        .btn-registrar:hover { background: #0051a8; }
+        .dashboard { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px; }
+        .card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; }
+        .card h3 { font-size: 1.15rem; color: #1d1d1f; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f5f5f7; padding-bottom: 4px; }
+        .metric-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .metric { flex: 1; background: #f5f5f7; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem; }
+        .metric span:first-child { display: block; color: #86868b; font-size: 0.78rem; font-weight: 600; margin-bottom: 2px; }
+        .metric span:last-child, .metric div:last-child { font-size: 1rem; font-weight: bold; }
+        .ejecucion-lista { color: #ff9500; max-height: 42px; overflow-y: auto; font-size: 0.9rem !important; line-height: 1.2; }
+        .staff-panel { background: #fdfdfd; border: 1px solid #e5e5ea; border-radius: 8px; padding: 8px; margin-bottom: 10px; font-size: 0.8rem; }
+        .staff-panel h5 { color: #86868b; text-transform: uppercase; margin-bottom: 4px; font-weight: 700; font-size: 0.75rem; }
+        .staff-row { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px dashed #f5f5f7; }
+        .staff-row:last-child { border-bottom: none; }
+        .staff-count { font-weight: bold; color: #34c759; }
+        .actions-panel { display: flex; gap: 6px; margin-bottom: 10px; }
+        .actions-panel button { flex: 1; border: none; padding: 8px 6px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; color: #ffffff; cursor: pointer; transition: opacity 0.2s; }
+        .actions-panel button:hover { opacity: 0.9; }
+        .btn-atender { background-color: #34c759; }
+        .btn-terminar { background-color: #ff3b30; }
+        .btn-reparar { background-color: #5856d6; }
+        .lists-container { display: flex; gap: 10px; flex: 1; overflow: hidden; }
+        .list-box { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .list-box h4 { font-size: 0.78rem; color: #86868b; text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+        .list-box ul { list-style: none; background: #f5f5f7; border-radius: 8px; padding: 6px; flex: 1; overflow-y: auto; font-size: 0.82rem; border: 1px solid #e5e5ea; }
+        .list-box ul li { background: #ffffff; padding: 5px 8px; border-radius: 6px; margin-bottom: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border-left: 3px solid #007aff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pila-kits li { border-left-color: #5856d6 !important; }
+        .pila-kits li:first-child { background: #f3f0ff !important; border-left: 4px solid #5856d6 !important; font-weight: 600; }
