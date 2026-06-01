@@ -99,6 +99,50 @@ public class JSBridge {
         }
     }
 
+    /**
+     * Cierra el día del Puesto Norte, escribe el CSV en disco y retorna
+     * la ruta absoluta del archivo para mostrarla en la UI.
+     */
+public void terminarDiaNorte() {
+    System.out.println("[JSBridge] terminarDiaNorte() LLAMADO");
+    terminarDiaPuesto(0);
+}
+
+public void terminarDiaSur() {
+    System.out.println("[JSBridge] terminarDiaSur() LLAMADO");
+    terminarDiaPuesto(1);
+}
+
+private void terminarDiaPuesto(int idx) {
+    try {
+        System.out.println("[JSBridge] cerrarDia puesto " + idx);
+        GestorRecursos.getInstancia().getPuesto(idx).cerrarDia();
+
+        System.out.println("[JSBridge] generando CSV puesto " + idx);
+        String ruta = GestorSolicitudes.getInstancia().generarCsvDia(idx);
+        System.out.println("[JSBridge] ruta resultado: '" + ruta + "'");
+
+        // Notificar al JS con el resultado
+        String rutaEscapada = ruta == null ? "" : ruta.replace("\\", "\\\\").replace("'", "\\'");
+        String script = ruta != null && !ruta.isEmpty() && !ruta.startsWith("ERROR")
+                ? "onDiaCerrado(true, '" + rutaEscapada + "');"
+                : "onDiaCerrado(false, 'No se pudo generar el CSV');";
+
+        javafx.application.Platform.runLater(() ->
+            co.ciencias.finalcc.view.Gui.getEngine().executeScript(script)
+        );
+
+    } catch (Exception e) {
+        System.err.println("[JSBridge] EXCEPCION: " + e.getClass().getName() + ": " + e.getMessage());
+        e.printStackTrace();
+        String msg = e.getMessage() == null ? "error desconocido" : e.getMessage().replace("'", "\\'");
+        javafx.application.Platform.runLater(() ->
+            co.ciencias.finalcc.view.Gui.getEngine().executeScript(
+                "onDiaCerrado(false, 'ERROR Java: " + msg + "');"
+            )
+        );
+    }
+}
     // ------------------------------------------------------------------
     // UTILIDAD
     // ------------------------------------------------------------------

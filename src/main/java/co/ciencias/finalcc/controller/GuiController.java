@@ -13,12 +13,7 @@ import javafx.application.Platform;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Controlador de la interfaz gráfica.
- *
- * <p>Cada 500 ms empuja el estado de los <b>dos</b> puestos (Norte y Sur)
- * al JavaScript del WebView llamando a {@code actualizarPuesto(id, datos)}.</p>
- */
+
 public class GuiController {
 
     private static final String[] IDS     = { "norte", "sur" };
@@ -48,7 +43,6 @@ public class GuiController {
         }
     }
 
-    // ------------------------------------------------------------------
 
     private void empujarEstado(String id, int idx) {
         try {
@@ -65,10 +59,8 @@ public class GuiController {
     }
 
     private String construirJson(PuestoAtencion p) {
-        // Kits disponibles
         int kits = p.getContadorKits();
 
-        // Cola FIFO de ejecución
         StringBuilder ejecucion = new StringBuilder("[");
         Nodo<SolicitudServicio> nodoEj = p.getSolicitudesEnEjecucion().getNodoFrente();
         boolean primero = true;
@@ -80,7 +72,6 @@ public class GuiController {
         }
         ejecucion.append("]");
 
-        // Personal disponible
         int bri = 0, seg = 0, han = 0;
         Nodo<Tecnico> nodoTec = p.getTecnicos().getCabeza();
         while (nodoTec != null) {
@@ -95,7 +86,6 @@ public class GuiController {
             nodoTec = nodoTec.getSiguiente();
         }
 
-        // Cola de prioridad (pendientes)
         StringBuilder cola = new StringBuilder("[");
         Nodo<SolicitudServicio> nodoCola = p.getSolicitudesPendientes().getCabeza();
         boolean primeroCola = true;
@@ -109,7 +99,6 @@ public class GuiController {
         }
         cola.append("]");
 
-        // Pila de kits dañados
         StringBuilder pila = new StringBuilder("[");
         Nodo<Kit> nodoKit = p.getPilaKitsDañados().getTope();
         boolean primeroPila = true;

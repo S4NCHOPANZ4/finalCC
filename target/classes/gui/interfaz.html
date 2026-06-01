@@ -4,70 +4,16 @@
     <meta charset="UTF-8">
     <title>AutoRescate 24/7 — Tablero de Control</title>
     <link rel="stylesheet" href="interfaz.css">
-    <style>
-        body { font-family: sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
-        .container { display: flex; height: 100vh; }
-        .form-panel { width: 280px; min-width: 240px; background: #1e293b;
-                      padding: 16px; display: flex; flex-direction: column; gap: 10px;
-                      border-right: 1px solid #334155; overflow-y: auto; }
-        .form-panel h2 { margin: 0 0 8px; font-size: 1rem; color: #7dd3fc; }
-        .field { display: flex; flex-direction: column; gap: 4px; }
-        .field label { font-size: 0.75rem; color: #94a3b8; }
-        .field input, .field select, .field textarea {
-            background: #0f172a; border: 1px solid #334155; color: #e2e8f0;
-            border-radius: 6px; padding: 6px 8px; font-size: 0.82rem; }
-        .btn-registrar { background: #0ea5e9; color: #fff; border: none;
-                         border-radius: 6px; padding: 10px; cursor: pointer;
-                         font-weight: 700; margin-top: auto; }
-        .btn-registrar:hover { background: #38bdf8; }
-        .dashboard { flex: 1; display: flex; gap: 16px; padding: 16px;
-                     justify-content: center; align-items: flex-start; overflow-y: auto; }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 10px;
-                padding: 14px; width: 420px; min-width: 320px; display: flex;
-                flex-direction: column; gap: 10px; }
-        .card h3 { margin: 0; font-size: 1rem; color: #7dd3fc; }
-        .metric-group { display: flex; gap: 10px; }
-        .metric { background: #0f172a; border-radius: 8px; padding: 8px 12px;
-                  flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 0.8rem; }
-        .metric span:first-child { color: #94a3b8; }
-        .metric span:last-child, .ejecucion-lista { font-weight: 700; color: #38bdf8; font-size: 1rem; }
-        .staff-panel { background: #0f172a; border-radius: 8px; padding: 8px 12px; }
-        .staff-panel h5 { margin: 0 0 6px; font-size: 0.75rem; color: #94a3b8; }
-        .staff-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
-        .staff-count { font-weight: 700; color: #4ade80; }
-        .actions-panel { display: flex; gap: 8px; }
-        .btn-atender, .btn-terminar, .btn-reparar {
-            flex: 1; border: none; border-radius: 6px; padding: 8px;
-            font-size: 0.78rem; font-weight: 700; cursor: pointer; }
-        .btn-atender  { background: #22c55e; color: #fff; }
-        .btn-atender:hover  { background: #4ade80; }
-        .btn-terminar { background: #f59e0b; color: #fff; }
-        .btn-terminar:hover { background: #fbbf24; }
-        .btn-reparar  { background: #6366f1; color: #fff; }
-        .btn-reparar:hover  { background: #818cf8; }
-        .lists-container { display: flex; gap: 10px; }
-        .list-box { flex: 1; background: #0f172a; border-radius: 8px; padding: 8px; }
-        .list-box h4 { margin: 0 0 6px; font-size: 0.72rem; color: #94a3b8; }
-        .list-box ul { margin: 0; padding: 0 0 0 14px; font-size: 0.78rem;
-                       color: #e2e8f0; list-style: disc; }
-        .pila-kits li { color: #f87171; }
-        .nodo-badge { display: inline-block; background: #334155; border-radius: 4px;
-                      padding: 2px 6px; font-size: 0.7rem; color: #7dd3fc; margin-top: 2px; }
-        #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-                 background: #ef4444; color: #fff; padding: 8px 16px; border-radius: 8px;
-                 font-size: 0.8rem; display: none; z-index: 9999; max-width: 80%; }
-    </style>
 </head>
+
 <body>
 
 <div id="toast"></div>
 
 <div class="container">
 
-    <!-- ═══════════════════ FORMULARIO ═══════════════════ -->
     <aside class="form-panel">
         <h2>Nueva Solicitud</h2>
-
         <div class="field">
             <label>Nombre del Cliente</label>
             <input id="nombre" type="text" placeholder="Ej. Carlos Mendoza">
@@ -107,16 +53,10 @@
             <textarea id="descripcion" style="resize:none;height:90px;"
                       placeholder="Indique detalles de lo ocurrido..."></textarea>
         </div>
-
-        <button class="btn-registrar" id="btnRegistrar">
-            Registrar e Insertar
-        </button>
+        <button class="btn-registrar" id="btnRegistrar">Registrar e Insertar</button>
     </aside>
 
-    <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
     <main class="dashboard">
-
-        <!-- Puesto Norte -->
         <div class="card">
             <h3>Puesto Norte</h3>
             <div class="metric-group">
@@ -136,9 +76,10 @@
                 <div class="staff-row"><span>Handyman:</span><span id="op-norte-han" class="staff-count">—</span></div>
             </div>
             <div class="actions-panel">
-                <button class="btn-atender"  id="btn-atender-norte">Atender</button>
-                <button class="btn-terminar" id="btn-terminar-norte">Terminar</button>
-                <button class="btn-reparar"  id="btn-reparar-norte">Reparar Kit</button>
+                <button class="btn-atender"    id="btn-atender-norte">Atender</button>
+                <button class="btn-terminar"   id="btn-terminar-norte">Terminar</button>
+                <button class="btn-reparar"    id="btn-reparar-norte">Reparar Kit</button>
+                <button class="btn-cerrar-dia" id="btn-cerrar-norte">⏹ Terminar Día</button>
             </div>
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-norte"></ul></div>
@@ -146,7 +87,6 @@
             </div>
         </div>
 
-        <!-- Puesto Sur -->
         <div class="card">
             <h3>Puesto Sur</h3>
             <div class="metric-group">
@@ -166,9 +106,10 @@
                 <div class="staff-row"><span>Handyman:</span><span id="op-sur-han" class="staff-count">—</span></div>
             </div>
             <div class="actions-panel">
-                <button class="btn-atender"  id="btn-atender-sur">Atender</button>
-                <button class="btn-terminar" id="btn-terminar-sur">Terminar</button>
-                <button class="btn-reparar"  id="btn-reparar-sur">Reparar Kit</button>
+                <button class="btn-atender"    id="btn-atender-sur">Atender</button>
+                <button class="btn-terminar"   id="btn-terminar-sur">Terminar</button>
+                <button class="btn-reparar"    id="btn-reparar-sur">Reparar Kit</button>
+                <button class="btn-cerrar-dia" id="btn-cerrar-sur">⏹ Terminar Día</button>
             </div>
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-sur"></ul></div>
@@ -180,15 +121,17 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// WRAPPER SEGURO PARA bridge — nunca lanza excepción al JS
-// ═══════════════════════════════════════════════════════
+function mostrarToast(msg, ok) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = ok ? "ok" : "";
+    t.style.display = "block";
+    setTimeout(function() { t.style.display = "none"; }, 6000);
+}
+
 function llamarBridge(metodo, args) {
     try {
-        if (typeof bridge === "undefined") {
-            mostrarToast("bridge no disponible aún");
-            return;
-        }
+        if (typeof bridge === "undefined") { mostrarToast("bridge no disponible aun"); return; }
         bridge[metodo].apply(bridge, args);
     } catch (e) {
         mostrarToast("Error Java: " + e);
@@ -196,91 +139,67 @@ function llamarBridge(metodo, args) {
     }
 }
 
-function mostrarToast(msg) {
-    var t = document.getElementById("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    setTimeout(function() { t.style.display = "none"; }, 4000);
+function onDiaCerrado(exito, mensaje) {
+    if (exito) {
+        mostrarToast("Dia cerrado. CSV en: " + mensaje, true);
+    } else {
+        mostrarToast("Error al cerrar dia: " + mensaje);
+    }
 }
 
-// ═══════════════════════════════════════════════════════
-// EVENTOS — addEventListener en vez de onclick inline
-// Esto evita que un error de JS en el atributo onclick
-// deje el botón en estado roto permanentemente.
-// ═══════════════════════════════════════════════════════
 document.getElementById("btnRegistrar").addEventListener("click", registrarSolicitud);
 
 ["norte", "sur"].forEach(function(puesto) {
-    document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() {
-        llamarBridge("accionAtender", [puesto]);
-    });
-    document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() {
-        llamarBridge("accionTerminar", [puesto]);
-    });
-    document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() {
-        llamarBridge("accionReparar", [puesto]);
-    });
+    document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() { llamarBridge("accionAtender",  [puesto]); });
+    document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() { llamarBridge("accionTerminar", [puesto]); });
+    document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() { llamarBridge("accionReparar",  [puesto]); });
+    document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
 });
 
-// ═══════════════════════════════════════════════════════
-// PREVIEW DEL PUESTO ASIGNADO
-// Tabla derivada del BFS hardcoded de GrafoCiudad.java
-//   0-Aeropuerto    → Norte (2 vs 3 saltos)
-//   1-Zona Norte    → Norte (0 saltos)
-//   2-Hospital      → Norte (1 salto)
-//   3-Estadio       → Norte (2 vs 3)
-//   4-Plaza Central → Norte (2 vs 2, empate → Norte)
-//   5-Mercado       → Sur   (2 vs 3)
-//   6-Terminal      → Sur   (2 vs 3)
-//   7-Zona Sur      → Sur   (0 saltos)
-//   8-Parque Ind.   → Sur   (1 salto)
-//   9-Universidad   → Norte (2 vs 3)
-// ═══════════════════════════════════════════════════════
 var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","sur","sur","sur","sur","norte"];
 
 function actualizarPreview() {
     var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
     var p   = PUESTO_POR_NODO[idx] || "norte";
-    document.getElementById("puestoPreview").textContent = "→ Puesto " + p.toUpperCase();
+    document.getElementById("puestoPreview").textContent = "-> Puesto " + p.toUpperCase();
 }
-
 document.getElementById("nodoCliente").addEventListener("change", actualizarPreview);
 actualizarPreview();
 
-// ═══════════════════════════════════════════════════════
-// REGISTRO DE SOLICITUD
-// ═══════════════════════════════════════════════════════
 function registrarSolicitud() {
     var nombre      = document.getElementById("nombre").value;
     var telefono    = document.getElementById("telefono").value;
     var tipo        = document.getElementById("tipoEmergencia").value;
     var indiceNodo  = document.getElementById("nodoCliente").value;
     var descripcion = document.getElementById("descripcion").value;
-
-    if (!nombre.trim() || !telefono.trim()) {
-        mostrarToast("Por favor ingrese Nombre y Teléfono.");
-        return;
-    }
-
-    // Limpiar ANTES de llamar a Java (así el form nunca queda bloqueado)
+    if (!nombre.trim() || !telefono.trim()) { mostrarToast("Por favor ingrese Nombre y Telefono."); return; }
     document.getElementById("nombre").value      = "";
     document.getElementById("telefono").value    = "";
     document.getElementById("descripcion").value = "";
-
     llamarBridge("registrarSolicitud", [nombre, telefono, tipo, indiceNodo, descripcion]);
 }
 
-// ═══════════════════════════════════════════════════════
-// ACTUALIZACIÓN DEL DOM
-// Java llama: actualizarPuesto('norte'|'sur', { kits, ejecucion, personal, cola, pila })
-// El segundo argumento llega como objeto nativo evaluado por WebEngine,
-// NO como string — no se necesita JSON.parse().
-// ═══════════════════════════════════════════════════════
+function cerrarDiaPuesto(id) {
+    var nombreVisible = id === "norte" ? "Norte" : "Sur";
+    if (!confirm("Cerrar el dia del Puesto " + nombreVisible + "?\n\n" +
+                 "- Las solicitudes EN ATENCION quedaran FINALIZADAS.\n" +
+                 "- Las solicitudes PENDIENTES se conservan para manana.\n" +
+                 "- Los kits en mantenimiento se conservan.\n" +
+                 "- El CSV se guardara en Descargas/reportes_autorescate.")) return;
+    mostrarToast("Procesando cierre...");
+    try {
+        if (typeof bridge === "undefined") { mostrarToast("Bridge no disponible."); return; }
+        if (id === "norte") { bridge.terminarDiaNorte(); } else { bridge.terminarDiaSur(); }
+    } catch(e) {
+        mostrarToast("Error al llamar Java: " + e);
+        console.error("[cerrarDia]", e);
+    }
+}
+
 function actualizarPuesto(id, d) {
     try {
         var kitsEl = document.getElementById("kits-" + id);
         if (kitsEl) kitsEl.textContent = d.kits;
-
         var briEl = document.getElementById("op-" + id + "-bri");
         var segEl = document.getElementById("op-" + id + "-seg");
         var hanEl = document.getElementById("op-" + id + "-han");
@@ -288,7 +207,6 @@ function actualizarPuesto(id, d) {
         if (segEl) segEl.textContent = d.personal.seg;
         if (hanEl) hanEl.textContent = d.personal.han;
 
-        // Ejecución FIFO
         var ejecucionEl = document.getElementById("ejecucion-" + id);
         if (ejecucionEl) {
             while (ejecucionEl.firstChild) ejecucionEl.removeChild(ejecucionEl.firstChild);
@@ -297,33 +215,27 @@ function actualizarPuesto(id, d) {
             } else {
                 for (var i = 0; i < d.ejecucion.length; i++) {
                     if (i > 0) ejecucionEl.appendChild(document.createElement("br"));
-                    ejecucionEl.appendChild(document.createTextNode("• " + d.ejecucion[i]));
+                    ejecucionEl.appendChild(document.createTextNode("* " + d.ejecucion[i]));
                 }
             }
         }
 
-        // Cola prioridad
         var colaEl = document.getElementById("cola-" + id);
         if (colaEl) {
             while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
             if (d.cola) {
                 for (var j = 0; j < d.cola.length; j++) {
-                    var li = document.createElement("li");
-                    li.textContent = d.cola[j];
-                    colaEl.appendChild(li);
+                    var li = document.createElement("li"); li.textContent = d.cola[j]; colaEl.appendChild(li);
                 }
             }
         }
 
-        // Pila kits
         var pilaEl = document.getElementById("pila-" + id);
         if (pilaEl) {
             while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
             if (d.pila) {
                 for (var k = 0; k < d.pila.length; k++) {
-                    var liKit = document.createElement("li");
-                    liKit.textContent = d.pila[k];
-                    pilaEl.appendChild(liKit);
+                    var liKit = document.createElement("li"); liKit.textContent = d.pila[k]; pilaEl.appendChild(liKit);
                 }
             }
         }

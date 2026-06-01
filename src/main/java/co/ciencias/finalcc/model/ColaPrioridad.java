@@ -102,6 +102,27 @@ public class ColaPrioridad {
     /** @return nodo cabeza de la lista interna (uso interno y GUI) */
     public Nodo<SolicitudServicio> getCabeza() { return cabeza; }
 
+
+        public boolean eliminar(SolicitudServicio solicitud) {
+        if (solicitud == null || esVacia()) return false;
+
+        if (cabeza.getDato() == solicitud) {
+            cabeza = cabeza.getSiguiente();
+            tamanio--;
+            return true;
+        }
+
+        Nodo<SolicitudServicio> actual = cabeza;
+        while (actual.getSiguiente() != null) {
+            if (actual.getSiguiente().getDato() == solicitud) {
+                actual.setSiguiente(actual.getSiguiente().getSiguiente());
+                tamanio--;
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
     // ------------------------------------------------------------------
     // Comparación con orden total estricto
     // ------------------------------------------------------------------

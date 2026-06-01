@@ -9,7 +9,7 @@ public enum TipoEmergencia {
     // Vinculamos cada emergencia con su nivel de prioridad (valor) y su Especialidad técnica asignada
     MEDICA(1, BRIGADISTA),
     SEGURIDAD_PUBLICA(2, SEGURIDAD_RUTA),
-    PROTECCION_CIVIL(3, BRIGADISTA),
+    PROTECCION_CIVIL(3, SEGURIDAD_RUTA),
     SERVICIOS_PUBLICOS(4, HANDYMAN),
     SERVICIOS_DE_APOYO(5, HANDYMAN);
 

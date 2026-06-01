@@ -71,4 +71,7 @@ public class ListaEnlazada<T> {
                 "Índice " + indice + " fuera de rango [0," + (tamanio - 1) + "]");
         }
     }
+    public void limpiar() { cabeza = null; tamanio = 0; }  // ajusta nombres según tu impl
+
+
 }

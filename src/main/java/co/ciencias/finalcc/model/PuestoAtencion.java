@@ -28,10 +28,9 @@ public class PuestoAtencion {
 
     public static final int NORTE = 0;
     public static final int SUR   = 1;
-
     private final int    indice;
     private final String nombre;
-
+    private int kitsReparadosHoy = 0;
     private final ColaPrioridad                  solicitudesPendientes;
     private final Cola<SolicitudServicio>         solicitudesEnEjecucion;
     private final Pila<Kit>                      pilaKitsDañados;
@@ -69,22 +68,36 @@ public class PuestoAtencion {
         if (solicitudesPendientes.esVacia()) return false;
         if (stockKitsManuales <= 0)          return false;
 
-        SolicitudServicio proxSol = solicitudesPendientes.verFrente();
-        Tecnico tec = buscarTecnico(proxSol.getTipoEmergencia().getEspecialidad());
+        // Recorre la cola en orden de prioridad buscando la primera solicitud
+        // cuyo técnico requerido tenga al menos uno disponible en este puesto
+        SolicitudServicio candidata = null;
+        Tecnico           tec       = null;
 
-        if (tec == null) return false;
+        Nodo<SolicitudServicio> actual = solicitudesPendientes.getCabeza();
+        while (actual != null) {
+            SolicitudServicio sol     = actual.getDato();
+            Especialidad      esp     = sol.getTipoEmergencia().getEspecialidad();
+            Tecnico           found   = buscarTecnico(esp);
+            if (found != null) {
+                candidata = sol;
+                tec       = found;
+                break;
+            }
+            actual = actual.getSiguiente();
+        }
 
-        solicitudesPendientes.extraer();
+        if (candidata == null) return false; // todos los técnicos requeridos están ocupados
+
+        solicitudesPendientes.eliminar(candidata);
         stockKitsManuales--;
         tec.setEstado(EstadoTecnico.OCUPADA);
 
-        proxSol.setTecnicoAsignado(tec);
-        proxSol.setEstado(EstadoSolicitud.EN_PROCESO);
+        candidata.setTecnicoAsignado(tec);
+        candidata.setEstado(EstadoSolicitud.EN_PROCESO);
 
-        solicitudesEnEjecucion.encolar(proxSol);
+        solicitudesEnEjecucion.encolar(candidata);
         return true;
     }
-
     /**
      * Finaliza la solicitud activa más antigua (FIFO), libera el técnico
      * y coloca un kit gastado en la pila de mantenimiento.
@@ -114,10 +127,14 @@ public class PuestoAtencion {
      *
      * @return {@code true} si había un kit que reparar
      */
+    
+    public int getKitsReparadosHoy() { return kitsReparadosHoy; }
+    public void resetKitsReparadosHoy() { kitsReparadosHoy = 0; }
     public boolean repararKitTope() {
         if (pilaKitsDañados.esVacia()) return false;
         pilaKitsDañados.pop();
         stockKitsManuales++;
+        kitsReparadosHoy++;   // ← línea nueva
         return true;
     }
 
@@ -193,7 +210,30 @@ public class PuestoAtencion {
         for (int i = 1; i <= 7; i++)
             tecnicos.agregar(new Tecnico(p + "-HAN-" + fmt(i), HANDYMAN,       EstadoTecnico.DISPONIBLE, indice));
     }
-
+/**
+ * Cierra el día operativo del puesto:
+ * - Las solicitudes EN_PROCESO se marcan FINALIZADA y se vacía la cola de ejecución.
+ * - Las solicitudes PENDIENTE en la cola de prioridad se conservan para el día siguiente.
+ * - Los kits en la pila de mantenimiento se conservan.
+ * - Los técnicos ocupados quedan DISPONIBLE.
+ * - El contador de kits reparados se reinicia para el nuevo día.
+ */
+    public void cerrarDia() {
+        // Finalizar todo lo que estaba EN_PROCESO
+        while (!solicitudesEnEjecucion.esVacia()) {
+            SolicitudServicio sol = solicitudesEnEjecucion.desencolar();
+            sol.setEstado(EstadoSolicitud.FINALIZADA);
+            if (sol.getTecnicoAsignado() != null) {
+                sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
+            }
+            // Kit gastado va a la pila de mantenimiento (igual que terminarSolicitudActiva)
+            Kit kitGastado = new Kit("Cierre de día: " + sol.getCliente().getNombre());
+            kitGastado.setCompleto(false);
+            pilaKitsDañados.push(kitGastado);
+        }
+        // Resetear contador diario de reparaciones
+        kitsReparadosHoy = 0;
+    }
     private static String fmt(int n) {
         return n < 10 ? "0" + n : String.valueOf(n);
     }
