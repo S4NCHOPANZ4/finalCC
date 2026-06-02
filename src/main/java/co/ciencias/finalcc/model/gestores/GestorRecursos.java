@@ -43,8 +43,7 @@ public class GestorRecursos {
 
     public boolean cambiarEstadoUnidad(UnidadServicio unidad, EstadoUnidad nuevoEstado) {
         if (unidad == null) return false;
-        if (unidad.getEstado() == EstadoUnidad.EN_MANTENIMIENTO
-                && nuevoEstado == EstadoUnidad.ASIGNADO) return false;
+        if (unidad.getEstado() == EstadoUnidad.EN_MANTENIMIENTO && nuevoEstado == EstadoUnidad.ASIGNADO) return false;
         unidad.setEstado(nuevoEstado);
         return true;
     }

@@ -61,8 +61,7 @@ public class ColaPrioridad {
             cabeza = nuevo;
         } else {
             Nodo<SolicitudServicio> actual = cabeza;
-            while (actual.getSiguiente() != null
-                    && !tieneMayorPrioridad(solicitud, actual.getSiguiente().getDato())) {
+            while (actual.getSiguiente() != null && !tieneMayorPrioridad(solicitud, actual.getSiguiente().getDato())) {
                 actual = actual.getSiguiente();
             }
             nuevo.setSiguiente(actual.getSiguiente());

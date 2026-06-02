@@ -1,6 +1,5 @@
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\controller\AplMain.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\controller\GuiController.java
-C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\controller\MonitoreoAtencion.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\Cliente.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\Cola.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\ColaPrioridad.java
@@ -12,7 +11,6 @@ C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\c
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\enums\TipoUnidad.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\enums\TipoVia.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\gestores\GestorKits.java
-C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\gestores\GestorOperaciones.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\gestores\GestorRecursos.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\gestores\GestorSolicitudes.java
 C:\Users\BUITR\OneDrive\Documentos\2026-1\Ciancias I\finalCC2\src\main\java\co\ciencias\finalcc\model\GrafoCiudad.java

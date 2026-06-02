@@ -6,7 +6,6 @@ co\ciencias\finalcc\model\enums\TipoEmergencia.class
 co\ciencias\finalcc\view\VistaConsola.class
 co\ciencias\finalcc\model\GrafoCiudad.class
 co\ciencias\finalcc\model\enums\EstadoTecnico.class
-co\ciencias\finalcc\controller\GuiController$2.class
 co\ciencias\finalcc\model\Kit.class
 co\ciencias\finalcc\view\JSBridge.class
 co\ciencias\finalcc\model\enums\EstadoUnidad.class
@@ -26,11 +25,7 @@ co\ciencias\finalcc\controller\GuiController.class
 co\ciencias\finalcc\model\Cliente.class
 co\ciencias\finalcc\model\enums\TipoUnidad.class
 co\ciencias\finalcc\model\ColaPrioridad.class
-co\ciencias\finalcc\model\gestores\GestorOperaciones.class
-co\ciencias\finalcc\controller\MonitoreoAtencion.class
-co\ciencias\finalcc\controller\GuiController$1.class
 co\ciencias\finalcc\model\enums\TipoVia.class
 co\ciencias\finalcc\model\enums\Especialidad.class
 co\ciencias\finalcc\model\gestores\GestorRecursos.class
 co\ciencias\finalcc\model\ListaEnlazada.class
-co\ciencias\finalcc\view\Gui$1.class

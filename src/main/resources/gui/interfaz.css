@@ -1,4 +1,3 @@
-
 *, *::before, *::after {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
@@ -110,6 +109,7 @@ body {
 .btn-registrar:hover {
     background: #e5e5e5;
 }
+
 .dashboard {
     flex: 1;
     display: flex;
@@ -144,7 +144,6 @@ body {
     padding-bottom: 8px;
 }
 
-/* ── Métricas ── */
 .metric-group {
     display: flex;
     gap: 8px;
@@ -171,15 +170,62 @@ body {
 
 .metric span:last-child {
     font-weight: 800;
-    font-size: 1.3rem;
+    font-size: .7rem;
     color: #facc15;
 }
 
 .ejecucion-lista {
-    font-weight: 700;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: #22c55e;
     line-height: 1.5;
+}
+
+.ejecucion-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: #1e1e1e;
+    border: 1px solid #2e2e2e;
+    border-left: 3px solid #22c55e;
+    border-radius: 4px;
+}
+
+.ejecucion-item:last-child { margin-bottom: 0; }
+
+.ejecucion-cliente {
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+
+.ejecucion-fila {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+}
+
+.ejecucion-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #555555;
+    width: 26px;
+    flex-shrink: 0;
+}
+
+.tag-tecnico {
+    color: #facc15;
+    font-weight: 600;
+}
+
+.tag-unidad {
+    color: #38bdf8;
+    font-weight: 600;
 }
 
 .staff-panel {
@@ -208,13 +254,47 @@ body {
 }
 
 .staff-row:last-child { border-bottom: none; }
-
 .staff-row span:first-child { color: #aaaaaa; }
 
 .staff-count {
     font-weight: 800;
     font-size: 0.9rem;
     color: #22c55e;
+}
+
+/* ── Vehiculos disponibles ── */
+.vehicles-panel {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.vehicles-panel h5 {
+    margin: 0 0 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #666666;
+}
+
+.vehicle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 2px 0;
+    border-bottom: 1px solid #222;
+}
+
+.vehicle-row:last-child { border-bottom: none; }
+.vehicle-row span:first-child { color: #aaaaaa; }
+
+.vehicle-count {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #38bdf8;
 }
 
 .actions-panel {
@@ -237,35 +317,23 @@ body {
     transition: opacity 0.15s, transform 0.1s;
 }
 
-.btn-atender, .btn-terminar, .btn-reparar, .btn-cerrar-dia:active {
+.btn-atender:active, .btn-terminar:active, .btn-reparar:active, .btn-cerrar-dia:active {
     transform: scale(0.97);
 }
 
-.btn-atender {
-    background: #22c55e;
-    color: #000000;
-}
-.btn-atender:hover { background: #16a34a; }
+.btn-atender            { background: #22c55e; color: #000000; }
+.btn-atender:hover      { background: #16a34a; }
 
-.btn-terminar {
-    background: #facc15;
-    color: #000000;
-}
-.btn-terminar:hover { background: #eab308; }
+.btn-terminar           { background: #facc15; color: #000000; }
+.btn-terminar:hover     { background: #eab308; }
 
-.btn-reparar {
-    background: #ffffff;
-    color: #000000;
-}
-.btn-reparar:hover { background: #d4d4d4; }
+.btn-reparar            { background: #ffffff; color: #000000; }
+.btn-reparar:hover      { background: #d4d4d4; }
 
-.btn-cerrar-dia {
-    background: #dc2626;
-    color: #ffffff;
-    flex-basis: 100%;
-}
-.btn-cerrar-dia:hover { background: #b91c1c; }
+.btn-cerrar-dia         { background: #dc2626; color: #ffffff; flex-basis: 100%; }
+.btn-cerrar-dia:hover   { background: #b91c1c; }
 
+/* ── Listas (cola y pila) ── */
 .lists-container {
     display: flex;
     gap: 8px;
@@ -317,6 +385,7 @@ body {
 
 .pila-kits li { color: #f87171; }
 
+/* ── Toast de notificacion ── */
 #toast {
     position: fixed;
     bottom: 20px;

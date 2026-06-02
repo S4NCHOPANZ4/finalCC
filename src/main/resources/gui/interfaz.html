@@ -19,41 +19,41 @@
             <input id="nombre" type="text" placeholder="Ej. Carlos Mendoza">
         </div>
         <div class="field">
-            <label>Teléfono</label>
+            <label>Telefono</label>
             <input id="telefono" type="text" placeholder="Ej. 3159876543">
         </div>
         <div class="field">
             <label>Tipo de Emergencia</label>
             <select id="tipoEmergencia">
-                <option value="MEDICA">Médica</option>
-                <option value="SEGURIDAD_PUBLICA">Seguridad Pública</option>
-                <option value="PROTECCION_CIVIL">Protección Civil</option>
-                <option value="SERVICIOS_PUBLICOS">Servicios Públicos</option>
-                <option value="SERVICIOS_DE_APOYO">Servicios de Apoyo</option>
+                <option value="MEDICA">Medica — Vehiculo Liviano</option>
+                <option value="SEGURIDAD_PUBLICA">Seguridad Publica — Camioneta</option>
+                <option value="PROTECCION_CIVIL">Proteccion Civil — Camioneta</option>
+                <option value="SERVICIOS_PUBLICOS">Servicios Publicos — Grua</option>
+                <option value="SERVICIOS_DE_APOYO">Servicios de Apoyo — Moto</option>
             </select>
         </div>
         <div class="field">
-            <label>Ubicación (nodo del grafo)</label>
+            <label>Ubicacion (nodo del grafo)</label>
             <select id="nodoCliente">
                 <option value="0">0 — Aeropuerto</option>
-                <option value="1">1 — Zona Norte ★ Puesto</option>
+                <option value="1">1 — Zona Norte * Puesto</option>
                 <option value="2">2 — Hospital</option>
                 <option value="3">3 — Estadio</option>
                 <option value="4">4 — Plaza Central</option>
                 <option value="5">5 — Mercado</option>
                 <option value="6">6 — Terminal</option>
-                <option value="7">7 — Zona Sur ★ Puesto</option>
+                <option value="7">7 — Zona Sur * Puesto</option>
                 <option value="8">8 — Parque Industrial</option>
                 <option value="9">9 — Universidad</option>
             </select>
-            <span class="nodo-badge" id="puestoPreview">→ calculando…</span>
+            <span class="nodo-badge" id="puestoPreview">-> calculando...</span>
         </div>
         <div class="field" style="flex:1;">
-            <label>Descripción del Incidente</label>
+            <label>Descripcion del Incidente</label>
             <textarea id="descripcion" style="resize:none;height:90px;"
                       placeholder="Indique detalles de lo ocurrido..."></textarea>
         </div>
-        <button class="btn-registrar" id="btnRegistrar">Registrar e Insertar</button>
+        <button class="btn-registrar" id="btnRegistrar">Registrar</button>
     </aside>
 
     <main class="dashboard">
@@ -65,21 +65,31 @@
                     <span id="kits-norte">—</span>
                 </div>
                 <div class="metric">
-                    <span>En Atención (FIFO)</span>
+                    <span>En Atencion (FIFO)</span>
                     <div id="ejecucion-norte" class="ejecucion-lista">NINGUNA</div>
                 </div>
             </div>
+
             <div class="staff-panel">
                 <h5>Personal Disponible</h5>
                 <div class="staff-row"><span>Brigadistas:</span><span id="op-norte-bri" class="staff-count">—</span></div>
                 <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-norte-seg" class="staff-count">—</span></div>
                 <div class="staff-row"><span>Handyman:</span><span id="op-norte-han" class="staff-count">—</span></div>
             </div>
+
+            <div class="vehicles-panel">
+                <h5>Vehiculos Disponibles</h5>
+                <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-norte-liv" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-norte-cam" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-norte-grua" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-norte-moto" class="vehicle-count">—</span></div>
+            </div>
+
             <div class="actions-panel">
                 <button class="btn-atender"    id="btn-atender-norte">Atender</button>
                 <button class="btn-terminar"   id="btn-terminar-norte">Terminar</button>
                 <button class="btn-reparar"    id="btn-reparar-norte">Reparar Kit</button>
-                <button class="btn-cerrar-dia" id="btn-cerrar-norte">⏹ Terminar Día</button>
+                <button class="btn-cerrar-dia" id="btn-cerrar-norte">Terminar Dia</button>
             </div>
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-norte"></ul></div>
@@ -95,21 +105,31 @@
                     <span id="kits-sur">—</span>
                 </div>
                 <div class="metric">
-                    <span>En Atención (FIFO)</span>
+                    <span>En Atencion (FIFO)</span>
                     <div id="ejecucion-sur" class="ejecucion-lista">NINGUNA</div>
                 </div>
             </div>
+
             <div class="staff-panel">
                 <h5>Personal Disponible</h5>
                 <div class="staff-row"><span>Brigadistas:</span><span id="op-sur-bri" class="staff-count">—</span></div>
                 <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-sur-seg" class="staff-count">—</span></div>
                 <div class="staff-row"><span>Handyman:</span><span id="op-sur-han" class="staff-count">—</span></div>
             </div>
+
+            <div class="vehicles-panel">
+                <h5>Vehiculos Disponibles</h5>
+                <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-sur-liv" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-sur-cam" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-sur-grua" class="vehicle-count">—</span></div>
+                <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-sur-moto" class="vehicle-count">—</span></div>
+            </div>
+
             <div class="actions-panel">
                 <button class="btn-atender"    id="btn-atender-sur">Atender</button>
                 <button class="btn-terminar"   id="btn-terminar-sur">Terminar</button>
                 <button class="btn-reparar"    id="btn-reparar-sur">Reparar Kit</button>
-                <button class="btn-cerrar-dia" id="btn-cerrar-sur">⏹ Terminar Día</button>
+                <button class="btn-cerrar-dia" id="btn-cerrar-sur">Terminar Dia</button>
             </div>
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-sur"></ul></div>
@@ -156,7 +176,7 @@ document.getElementById("btnRegistrar").addEventListener("click", registrarSolic
     document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
 });
 
-var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","sur","sur","sur","sur","norte"];
+var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","norte","sur","sur","sur","norte"];
 
 function actualizarPreview() {
     var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
@@ -200,12 +220,24 @@ function actualizarPuesto(id, d) {
     try {
         var kitsEl = document.getElementById("kits-" + id);
         if (kitsEl) kitsEl.textContent = d.kits;
+
         var briEl = document.getElementById("op-" + id + "-bri");
         var segEl = document.getElementById("op-" + id + "-seg");
         var hanEl = document.getElementById("op-" + id + "-han");
         if (briEl) briEl.textContent = d.personal.bri;
         if (segEl) segEl.textContent = d.personal.seg;
         if (hanEl) hanEl.textContent = d.personal.han;
+
+        if (d.vehiculos) {
+            var livEl  = document.getElementById("veh-" + id + "-liv");
+            var camEl  = document.getElementById("veh-" + id + "-cam");
+            var gruaEl = document.getElementById("veh-" + id + "-grua");
+            var motoEl = document.getElementById("veh-" + id + "-moto");
+            if (livEl)  livEl.textContent  = d.vehiculos.liv;
+            if (camEl)  camEl.textContent  = d.vehiculos.cam;
+            if (gruaEl) gruaEl.textContent = d.vehiculos.grua;
+            if (motoEl) motoEl.textContent = d.vehiculos.moto;
+        }
 
         var ejecucionEl = document.getElementById("ejecucion-" + id);
         if (ejecucionEl) {
@@ -214,8 +246,40 @@ function actualizarPuesto(id, d) {
                 ejecucionEl.textContent = "NINGUNA";
             } else {
                 for (var i = 0; i < d.ejecucion.length; i++) {
-                    if (i > 0) ejecucionEl.appendChild(document.createElement("br"));
-                    ejecucionEl.appendChild(document.createTextNode("* " + d.ejecucion[i]));
+                    var item = d.ejecucion[i];
+                    var div = document.createElement("div");
+                    div.className = "ejecucion-item";
+
+                    var clienteSpan = document.createElement("span");
+                    clienteSpan.className = "ejecucion-cliente";
+                    clienteSpan.textContent = item.cliente;
+
+                    var filaTec = document.createElement("div");
+                    filaTec.className = "ejecucion-fila";
+                    var labelTec = document.createElement("span");
+                    labelTec.className = "ejecucion-label";
+                    labelTec.textContent = "Tec";
+                    var tecSpan = document.createElement("span");
+                    tecSpan.className = "tag-tecnico";
+                    tecSpan.textContent = item.tecnico;
+                    filaTec.appendChild(labelTec);
+                    filaTec.appendChild(tecSpan);
+
+                    var filaUni = document.createElement("div");
+                    filaUni.className = "ejecucion-fila";
+                    var labelUni = document.createElement("span");
+                    labelUni.className = "ejecucion-label";
+                    labelUni.textContent = "Uni";
+                    var uniSpan = document.createElement("span");
+                    uniSpan.className = "tag-unidad";
+                    uniSpan.textContent = item.unidad;
+                    filaUni.appendChild(labelUni);
+                    filaUni.appendChild(uniSpan);
+
+                    div.appendChild(clienteSpan);
+                    div.appendChild(filaTec);
+                    div.appendChild(filaUni);
+                    ejecucionEl.appendChild(div);
                 }
             }
         }
@@ -225,7 +289,9 @@ function actualizarPuesto(id, d) {
             while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
             if (d.cola) {
                 for (var j = 0; j < d.cola.length; j++) {
-                    var li = document.createElement("li"); li.textContent = d.cola[j]; colaEl.appendChild(li);
+                    var li = document.createElement("li");
+                    li.textContent = d.cola[j];
+                    colaEl.appendChild(li);
                 }
             }
         }
@@ -235,7 +301,9 @@ function actualizarPuesto(id, d) {
             while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
             if (d.pila) {
                 for (var k = 0; k < d.pila.length; k++) {
-                    var liKit = document.createElement("li"); liKit.textContent = d.pila[k]; pilaEl.appendChild(liKit);
+                    var liKit = document.createElement("li");
+                    liKit.textContent = d.pila[k];
+                    pilaEl.appendChild(liKit);
                 }
             }
         }

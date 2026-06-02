@@ -8,7 +8,7 @@ import co.ciencias.finalcc.model.NodoGrafo.AristaGrafo;
  * <h2>Topología</h2>
  * <pre>
  *
- *   [Aeropuerto]──5──[Zona Norte]──3──[Hospital]
+ *   [Aeropuerto]──5──[Zona Norte]──3──[Hospital]          
  *        |                |               |
  *        7               4               6
  *        |                |               |
@@ -99,9 +99,7 @@ public class GrafoCiudad {
         nodos[b].agregarAdyacente(nodos[a], peso);
     }
 
-    // ------------------------------------------------------------------
-    // API pública
-    // ------------------------------------------------------------------
+
 
     /** @return array de todos los nodos (para poblar el selector en la GUI). */
     public NodoGrafo[] getNodos() { return nodos; }
