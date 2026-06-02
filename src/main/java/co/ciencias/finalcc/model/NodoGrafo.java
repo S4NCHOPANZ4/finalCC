@@ -1,21 +1,9 @@
 package co.ciencias.finalcc.model;
 
-/**
- * Nodo del grafo de ciudad.
- *
- * <p>Cada nodo representa una intersección o punto de la ciudad.
- * Las conexiones se almacenan en una {@link ListaEnlazada} propia,
- * sin usar ninguna clase de {@code java.util}.</p>
- *
- * <p>El peso de cada arista representa la distancia (o tiempo)
- * entre dos nodos conectados.</p>
- */
 public class NodoGrafo {
 
-    /** Nombre descriptivo del nodo, p.ej. "Plaza Central". */
     private final String nombre;
 
-    /** Lista de aristas salientes desde este nodo. */
     private final ListaEnlazada<AristaGrafo> adyacentes;
 
     public NodoGrafo(String nombre) {
@@ -23,7 +11,6 @@ public class NodoGrafo {
         this.adyacentes = new ListaEnlazada<>();
     }
 
-    /** Añade una arista hacia {@code destino} con el peso indicado. */
     public void agregarAdyacente(NodoGrafo destino, int peso) {
         adyacentes.agregar(new AristaGrafo(destino, peso));
     }
