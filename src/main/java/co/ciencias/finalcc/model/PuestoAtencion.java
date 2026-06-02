@@ -216,7 +216,30 @@ public class PuestoAtencion {
         for (int i = 1; i <= 7; i++)
             tecnicos.agregar(new Tecnico(p + "-HAN-" + fmt(i), HANDYMAN,       EstadoTecnico.DISPONIBLE, indice));
     }
+    public boolean revertirUltimaEjecucion() {
+        if (solicitudesEnEjecucion.esVacia()) return false;
 
+        SolicitudServicio sol = solicitudesEnEjecucion.desencolarUltimo();
+        if (sol == null) return false;
+
+        // Liberar técnico
+        if (sol.getTecnicoAsignado() != null) {
+            sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
+            sol.setTecnicoAsignado(null);
+        }
+        // Liberar unidad
+        if (sol.getUnidadAsignada() != null) {
+            sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
+            sol.setUnidadAsignada(null);
+        }
+        // Restaurar estado y kit
+        sol.setEstado(EstadoSolicitud.PENDIENTE);
+        stockKitsManuales++;   // el kit "vuelve" porque nunca se dañó
+
+        // Reinsertar en cola de prioridad con su posición original
+        solicitudesPendientes.insertar(sol);
+        return true;
+    }
     private static String fmt(int n) {
         return n < 10 ? "0" + n : String.valueOf(n);
     }

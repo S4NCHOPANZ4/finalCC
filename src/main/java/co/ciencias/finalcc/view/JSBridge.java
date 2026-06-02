@@ -47,4 +47,9 @@ public class JSBridge {
             controller.terminarDiaSur();
         } catch (Exception e) {}
     }
+        public void accionRevertir(String puestoId) {
+        try {
+            controller.accionRevertir(puestoId);
+        } catch (Exception e) {}
+    }
 }

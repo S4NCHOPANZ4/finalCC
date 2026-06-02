@@ -36,6 +36,27 @@ public class Cola<T> {
         return esVacia() ? null : frente.getDato();
     }
 
+    public T desencolarUltimo() {
+    if (esVacia()) return null;
+    if (frente == fin) {          // un solo elemento
+        T dato = frente.getDato();
+        frente = null;
+        fin    = null;
+        tamanio--;
+        return dato;
+    }
+    // Avanzar hasta el penúltimo
+    Nodo<T> actual = frente;
+    while (actual.getSiguiente() != fin) {
+        actual = actual.getSiguiente();
+    }
+    T dato = fin.getDato();
+    actual.setSiguiente(null);
+    fin = actual;
+    tamanio--;
+    return dato;
+}
+    
     public boolean esVacia() { return frente == null; }
     public int getTamanio() { return tamanio; }
     public Nodo<T> getNodoFrente() { return frente; }

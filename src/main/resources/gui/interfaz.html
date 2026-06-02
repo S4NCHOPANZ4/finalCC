@@ -89,8 +89,12 @@
                 <button class="btn-atender"    id="btn-atender-norte">Atender</button>
                 <button class="btn-terminar"   id="btn-terminar-norte">Terminar</button>
                 <button class="btn-reparar"    id="btn-reparar-norte">Reparar Kit</button>
-                <button class="btn-cerrar-dia" id="btn-cerrar-norte">Terminar Dia</button>
+                <div class="actions-fila-dia">
+                    <button class="btn-revertir"   id="btn-revertir-norte">Revertir</button>
+                    <button class="btn-cerrar-dia" id="btn-cerrar-norte">Terminar Dia</button>
+                </div>
             </div>
+
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-norte"></ul></div>
                 <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-norte" class="pila-kits"></ul></div>
@@ -129,188 +133,193 @@
                 <button class="btn-atender"    id="btn-atender-sur">Atender</button>
                 <button class="btn-terminar"   id="btn-terminar-sur">Terminar</button>
                 <button class="btn-reparar"    id="btn-reparar-sur">Reparar Kit</button>
-                <button class="btn-cerrar-dia" id="btn-cerrar-sur">Terminar Dia</button>
+                <div class="actions-fila-dia">
+                    <button class="btn-revertir"   id="btn-revertir-sur">Revertir</button>
+                    <button class="btn-cerrar-dia" id="btn-cerrar-sur">Terminar Dia</button>
+                </div>
             </div>
+
             <div class="lists-container">
                 <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-sur"></ul></div>
                 <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-sur" class="pila-kits"></ul></div>
             </div>
         </div>
-
     </main>
 </div>
 
 <script>
-function mostrarToast(msg, ok) {
-    var t = document.getElementById("toast");
-    t.textContent = msg;
-    t.className = ok ? "ok" : "";
-    t.style.display = "block";
-    setTimeout(function() { t.style.display = "none"; }, 6000);
-}
-
-function llamarBridge(metodo, args) {
-    try {
-        if (typeof bridge === "undefined") { mostrarToast("bridge no disponible aun"); return; }
-        bridge[metodo].apply(bridge, args);
-    } catch (e) {
-        mostrarToast("Error Java: " + e);
-        console.error("[bridge." + metodo + "]", e);
+    function mostrarToast(msg, ok) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = ok ? "ok" : "";
+        t.style.display = "block";
+        setTimeout(function() { t.style.display = "none"; }, 6000);
     }
-}
 
-function onDiaCerrado(exito, mensaje) {
-    if (exito) {
-        mostrarToast("Dia cerrado. CSV en: " + mensaje, true);
-    } else {
-        mostrarToast("Error al cerrar dia: " + mensaje);
-    }
-}
-
-document.getElementById("btnRegistrar").addEventListener("click", registrarSolicitud);
-
-["norte", "sur"].forEach(function(puesto) {
-    document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() { llamarBridge("accionAtender",  [puesto]); });
-    document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() { llamarBridge("accionTerminar", [puesto]); });
-    document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() { llamarBridge("accionReparar",  [puesto]); });
-    document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
-});
-
-var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","norte","sur","sur","sur","norte"];
-
-function actualizarPreview() {
-    var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
-    var p   = PUESTO_POR_NODO[idx] || "norte";
-    document.getElementById("puestoPreview").textContent = "-> Puesto " + p.toUpperCase();
-}
-document.getElementById("nodoCliente").addEventListener("change", actualizarPreview);
-actualizarPreview();
-
-function registrarSolicitud() {
-    var nombre      = document.getElementById("nombre").value;
-    var telefono    = document.getElementById("telefono").value;
-    var tipo        = document.getElementById("tipoEmergencia").value;
-    var indiceNodo  = document.getElementById("nodoCliente").value;
-    var descripcion = document.getElementById("descripcion").value;
-    if (!nombre.trim() || !telefono.trim()) { mostrarToast("Por favor ingrese Nombre y Telefono."); return; }
-    document.getElementById("nombre").value      = "";
-    document.getElementById("telefono").value    = "";
-    document.getElementById("descripcion").value = "";
-    llamarBridge("registrarSolicitud", [nombre, telefono, tipo, indiceNodo, descripcion]);
-}
-
-function cerrarDiaPuesto(id) {
-    var nombreVisible = id === "norte" ? "Norte" : "Sur";
-    if (!confirm("Cerrar el dia del Puesto " + nombreVisible + "?\n\n" +
-                 "- Las solicitudes EN ATENCION quedaran FINALIZADAS.\n" +
-                 "- Las solicitudes PENDIENTES se conservan para manana.\n" +
-                 "- Los kits en mantenimiento se conservan.\n" +
-                 "- El CSV se guardara en Descargas/reportes_autorescate.")) return;
-    mostrarToast("Procesando cierre...");
-    try {
-        if (typeof bridge === "undefined") { mostrarToast("Bridge no disponible."); return; }
-        if (id === "norte") { bridge.terminarDiaNorte(); } else { bridge.terminarDiaSur(); }
-    } catch(e) {
-        mostrarToast("Error al llamar Java: " + e);
-        console.error("[cerrarDia]", e);
-    }
-}
-
-function actualizarPuesto(id, d) {
-    try {
-        var kitsEl = document.getElementById("kits-" + id);
-        if (kitsEl) kitsEl.textContent = d.kits;
-
-        var briEl = document.getElementById("op-" + id + "-bri");
-        var segEl = document.getElementById("op-" + id + "-seg");
-        var hanEl = document.getElementById("op-" + id + "-han");
-        if (briEl) briEl.textContent = d.personal.bri;
-        if (segEl) segEl.textContent = d.personal.seg;
-        if (hanEl) hanEl.textContent = d.personal.han;
-
-        if (d.vehiculos) {
-            var livEl  = document.getElementById("veh-" + id + "-liv");
-            var camEl  = document.getElementById("veh-" + id + "-cam");
-            var gruaEl = document.getElementById("veh-" + id + "-grua");
-            var motoEl = document.getElementById("veh-" + id + "-moto");
-            if (livEl)  livEl.textContent  = d.vehiculos.liv;
-            if (camEl)  camEl.textContent  = d.vehiculos.cam;
-            if (gruaEl) gruaEl.textContent = d.vehiculos.grua;
-            if (motoEl) motoEl.textContent = d.vehiculos.moto;
+    function llamarBridge(metodo, args) {
+        try {
+            if (typeof bridge === "undefined") { mostrarToast("bridge no disponible aun"); return; }
+            bridge[metodo].apply(bridge, args);
+        } catch (e) {
+            mostrarToast("Error Java: " + e);
+            console.error("[bridge." + metodo + "]", e);
         }
+    }
 
-        var ejecucionEl = document.getElementById("ejecucion-" + id);
-        if (ejecucionEl) {
-            while (ejecucionEl.firstChild) ejecucionEl.removeChild(ejecucionEl.firstChild);
-            if (!d.ejecucion || d.ejecucion.length === 0) {
-                ejecucionEl.textContent = "NINGUNA";
-            } else {
-                for (var i = 0; i < d.ejecucion.length; i++) {
-                    var item = d.ejecucion[i];
-                    var div = document.createElement("div");
-                    div.className = "ejecucion-item";
+    function onDiaCerrado(exito, mensaje) {
+        if (exito) {
+            mostrarToast("Dia cerrado. CSV en: " + mensaje, true);
+        } else {
+            mostrarToast("Error al cerrar dia: " + mensaje);
+        }
+    }
 
-                    var clienteSpan = document.createElement("span");
-                    clienteSpan.className = "ejecucion-cliente";
-                    clienteSpan.textContent = item.cliente;
+    document.getElementById("btnRegistrar").addEventListener("click", registrarSolicitud);
 
-                    var filaTec = document.createElement("div");
-                    filaTec.className = "ejecucion-fila";
-                    var labelTec = document.createElement("span");
-                    labelTec.className = "ejecucion-label";
-                    labelTec.textContent = "Tec";
-                    var tecSpan = document.createElement("span");
-                    tecSpan.className = "tag-tecnico";
-                    tecSpan.textContent = item.tecnico;
-                    filaTec.appendChild(labelTec);
-                    filaTec.appendChild(tecSpan);
+    ["norte", "sur"].forEach(function(puesto) {
+        document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() { llamarBridge("accionAtender",  [puesto]); });
+        document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() { llamarBridge("accionTerminar", [puesto]); });
+        document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() { llamarBridge("accionReparar",  [puesto]); });
+        document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
+        document.getElementById("btn-revertir-" + puesto).addEventListener("click", function() { llamarBridge("accionRevertir", [puesto]); });
+    });
 
-                    var filaUni = document.createElement("div");
-                    filaUni.className = "ejecucion-fila";
-                    var labelUni = document.createElement("span");
-                    labelUni.className = "ejecucion-label";
-                    labelUni.textContent = "Uni";
-                    var uniSpan = document.createElement("span");
-                    uniSpan.className = "tag-unidad";
-                    uniSpan.textContent = item.unidad;
-                    filaUni.appendChild(labelUni);
-                    filaUni.appendChild(uniSpan);
+    var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","norte","sur","sur","sur","norte"];
 
-                    div.appendChild(clienteSpan);
-                    div.appendChild(filaTec);
-                    div.appendChild(filaUni);
-                    ejecucionEl.appendChild(div);
+    function actualizarPreview() {
+        var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
+        var p   = PUESTO_POR_NODO[idx] || "norte";
+        document.getElementById("puestoPreview").textContent = "-> Puesto " + p.toUpperCase();
+    }
+    document.getElementById("nodoCliente").addEventListener("change", actualizarPreview);
+    actualizarPreview();
+
+    function registrarSolicitud() {
+        var nombre      = document.getElementById("nombre").value;
+        var telefono    = document.getElementById("telefono").value;
+        var tipo        = document.getElementById("tipoEmergencia").value;
+        var indiceNodo  = document.getElementById("nodoCliente").value;
+        var descripcion = document.getElementById("descripcion").value;
+        if (!nombre.trim() || !telefono.trim()) { mostrarToast("Por favor ingrese Nombre y Telefono."); return; }
+        document.getElementById("nombre").value      = "";
+        document.getElementById("telefono").value    = "";
+        document.getElementById("descripcion").value = "";
+        llamarBridge("registrarSolicitud", [nombre, telefono, tipo, indiceNodo, descripcion]);
+        actualizarPreview();
+    }
+
+    function cerrarDiaPuesto(id) {
+        var nombreVisible = id === "norte" ? "Norte" : "Sur";
+        if (!confirm("Cerrar el dia del Puesto " + nombreVisible + "?\n\n" +
+                     "- Las solicitudes EN ATENCION quedaran FINALIZADAS.\n" +
+                     "- Las solicitudes PENDIENTES se conservan para manana.\n" +
+                     "- Los kits en mantenimiento se conservan.\n" +
+                     "- El CSV se guardara en Descargas/reportes_autorescate.")) return;
+        mostrarToast("Procesando cierre...");
+        try {
+            if (typeof bridge === "undefined") { mostrarToast("Bridge no disponible."); return; }
+            if (id === "norte") { bridge.terminarDiaNorte(); } else { bridge.terminarDiaSur(); }
+        } catch(e) {
+            mostrarToast("Error al llamar Java: " + e);
+            console.error("[cerrarDia]", e);
+        }
+    }
+
+    function actualizarPuesto(id, d) {
+        try {
+            var kitsEl = document.getElementById("kits-" + id);
+            if (kitsEl) kitsEl.textContent = d.kits;
+
+            var briEl = document.getElementById("op-" + id + "-bri");
+            var segEl = document.getElementById("op-" + id + "-seg");
+            var hanEl = document.getElementById("op-" + id + "-han");
+            if (briEl) briEl.textContent = d.personal.bri;
+            if (segEl) segEl.textContent = d.personal.seg;
+            if (hanEl) hanEl.textContent = d.personal.han;
+
+            if (d.vehiculos) {
+                var livEl  = document.getElementById("veh-" + id + "-liv");
+                var camEl  = document.getElementById("veh-" + id + "-cam");
+                var gruaEl = document.getElementById("veh-" + id + "-grua");
+                var motoEl = document.getElementById("veh-" + id + "-moto");
+                if (livEl)  livEl.textContent  = d.vehiculos.liv;
+                if (camEl)  camEl.textContent  = d.vehiculos.cam;
+                if (gruaEl) gruaEl.textContent = d.vehiculos.grua;
+                if (motoEl) motoEl.textContent = d.vehiculos.moto;
+            }
+
+            var ejecucionEl = document.getElementById("ejecucion-" + id);
+            if (ejecucionEl) {
+                while (ejecucionEl.firstChild) ejecucionEl.removeChild(ejecucionEl.firstChild);
+                if (!d.ejecucion || d.ejecucion.length === 0) {
+                    ejecucionEl.textContent = "NINGUNA";
+                } else {
+                    for (var i = 0; i < d.ejecucion.length; i++) {
+                        var item = d.ejecucion[i];
+                        var div = document.createElement("div");
+                        div.className = "ejecucion-item";
+
+                        var clienteSpan = document.createElement("span");
+                        clienteSpan.className = "ejecucion-cliente";
+                        clienteSpan.textContent = item.cliente;
+
+                        var filaTec = document.createElement("div");
+                        filaTec.className = "ejecucion-fila";
+                        var labelTec = document.createElement("span");
+                        labelTec.className = "ejecucion-label";
+                        labelTec.textContent = "Tec";
+                        var tecSpan = document.createElement("span");
+                        tecSpan.className = "tag-tecnico";
+                        tecSpan.textContent = item.tecnico;
+                        filaTec.appendChild(labelTec);
+                        filaTec.appendChild(tecSpan);
+
+                        var filaUni = document.createElement("div");
+                        filaUni.className = "ejecucion-fila";
+                        var labelUni = document.createElement("span");
+                        labelUni.className = "ejecucion-label";
+                        labelUni.textContent = "Uni";
+                        var uniSpan = document.createElement("span");
+                        uniSpan.className = "tag-unidad";
+                        uniSpan.textContent = item.unidad;
+                        filaUni.appendChild(labelUni);
+                        filaUni.appendChild(uniSpan);
+
+                        div.appendChild(clienteSpan);
+                        div.appendChild(filaTec);
+                        div.appendChild(filaUni);
+                        ejecucionEl.appendChild(div);
+                    }
                 }
             }
-        }
 
-        var colaEl = document.getElementById("cola-" + id);
-        if (colaEl) {
-            while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
-            if (d.cola) {
-                for (var j = 0; j < d.cola.length; j++) {
-                    var li = document.createElement("li");
-                    li.textContent = d.cola[j];
-                    colaEl.appendChild(li);
+            var colaEl = document.getElementById("cola-" + id);
+            if (colaEl) {
+                while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
+                if (d.cola) {
+                    for (var j = 0; j < d.cola.length; j++) {
+                        var li = document.createElement("li");
+                        li.textContent = d.cola[j];
+                        colaEl.appendChild(li);
+                    }
                 }
             }
-        }
 
-        var pilaEl = document.getElementById("pila-" + id);
-        if (pilaEl) {
-            while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
-            if (d.pila) {
-                for (var k = 0; k < d.pila.length; k++) {
-                    var liKit = document.createElement("li");
-                    liKit.textContent = d.pila[k];
-                    pilaEl.appendChild(liKit);
+            var pilaEl = document.getElementById("pila-" + id);
+            if (pilaEl) {
+                while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
+                if (d.pila) {
+                    for (var k = 0; k < d.pila.length; k++) {
+                        var liKit = document.createElement("li");
+                        liKit.textContent = d.pila[k];
+                        pilaEl.appendChild(liKit);
+                    }
                 }
             }
+        } catch (e) {
+            console.error("[actualizarPuesto:" + id + "]", e);
         }
-    } catch (e) {
-        console.error("[actualizarPuesto:" + id + "]", e);
     }
-}
 </script>
 
 </body>

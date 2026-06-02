@@ -77,7 +77,8 @@ body {
 .field select option {
     background: #1a1a1a;
 }
-
+.btn-revertir           { background: #7c3aed; color: #ffffff; }
+.btn-revertir:hover     { background: #6d28d9; }
 .nodo-badge {
     display: inline-block;
     background: #1a1a1a;
@@ -303,7 +304,7 @@ body {
     flex-wrap: wrap;
 }
 
-.btn-atender, .btn-terminar, .btn-reparar, .btn-cerrar-dia {
+.btn-atender, .btn-terminar, .btn-reparar, .btn-cerrar-dia, .btn-revertir {
     flex: 1;
     min-width: 70px;
     border: none;
@@ -317,7 +318,7 @@ body {
     transition: opacity 0.15s, transform 0.1s;
 }
 
-.btn-atender:active, .btn-terminar:active, .btn-reparar:active, .btn-cerrar-dia:active {
+.btn-atender:active, .btn-terminar:active, .btn-revertir:active, .btn-reparar:active, .btn-cerrar-dia:active {
     transform: scale(0.97);
 }
 
@@ -330,9 +331,23 @@ body {
 .btn-reparar            { background: #ffffff; color: #000000; }
 .btn-reparar:hover      { background: #d4d4d4; }
 
-.btn-cerrar-dia         { background: #dc2626; color: #ffffff; flex-basis: 100%; }
+.btn-cerrar-dia         { background: #dc2626; color: #ffffff;}
 .btn-cerrar-dia:hover   { background: #b91c1c; }
+.actions-fila-dia {
+    display: flex;
+    gap: 6px;
+    flex-basis: 100%;
+}
 
+.actions-fila-dia .btn-revertir {
+    flex: 0 0 auto;
+    min-width: 80px;
+}
+
+.actions-fila-dia .btn-cerrar-dia {
+    flex: 1;
+    flex-basis: auto;   /* anula el 100% previo dentro del flex-row */
+}
 /* ── Listas (cola y pila) ── */
 .lists-container {
     display: flex;

@@ -221,7 +221,11 @@ public class GuiController {
              + ",\"pila\":"     + pila
              + "}";
     }
-
+public void accionRevertir(String puestoId) {
+    try {
+        GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).revertirUltimaEjecucion();
+    } catch (Exception e) {}
+}
     // UTILIDAD
 
     private int indiceDe(String id) {
