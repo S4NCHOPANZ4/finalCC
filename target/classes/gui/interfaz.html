@@ -12,6 +12,7 @@
 
 <div class="container">
 
+    <!-- ══ PANEL DE FORMULARIO ══════════════════════════════════════════ -->
     <aside class="form-panel">
         <h2>Nueva Solicitud</h2>
         <div class="field">
@@ -56,271 +57,621 @@
         <button class="btn-registrar" id="btnRegistrar">Registrar</button>
     </aside>
 
+    <!-- ══ DASHBOARD ════════════════════════════════════════════════════ -->
     <main class="dashboard">
-        <div class="card">
-            <h3>Puesto Norte</h3>
-            <div class="metric-group">
-                <div class="metric">
-                    <span>Kits Libres</span>
-                    <span id="kits-norte">—</span>
+
+        <!-- ── Card Norte ── -->
+        <div class="card" id="card-norte">
+
+            <!-- Overlay CRUD (oculto por defecto) -->
+            <div class="crud-overlay" id="crud-norte" style="display:none;">
+                <div class="crud-header">
+                    <span class="crud-title">Gestión de Recursos — Norte</span>
+                    <button class="crud-close" id="crud-close-norte">✕</button>
                 </div>
-                <div class="metric">
-                    <span>En Atencion (FIFO)</span>
-                    <div id="ejecucion-norte" class="ejecucion-lista">NINGUNA</div>
+
+                <div class="crud-tabs">
+                    <button class="crud-tab active" id="tab-tec-norte"
+                            onclick="cambiarTab('norte','tec')">Técnicos</button>
+                    <button class="crud-tab" id="tab-veh-norte"
+                            onclick="cambiarTab('norte','veh')">Vehículos</button>
+                </div>
+
+                <!-- Panel técnicos Norte -->
+                <div class="crud-panel" id="panel-tec-norte">
+                    <div class="crud-lista" id="lista-tec-norte"></div>
+                    <div class="crud-form">
+                        <span class="crud-form-title">Agregar Técnico</span>
+                        <input class="crud-input" id="add-tec-nombre-norte"
+                               placeholder="Nombre (ej. N-BRI-04)">
+                        <select class="crud-select" id="add-tec-esp-norte">
+                            <option value="BRIGADISTA">Brigadista</option>
+                            <option value="SEGURIDAD_RUTA">Seguridad Ruta</option>
+                            <option value="HANDYMAN">Handyman</option>
+                        </select>
+                        <button class="crud-btn-add"
+                                onclick="agregarTecnico('norte')">+ Agregar</button>
+                    </div>
+                </div>
+
+                <!-- Panel vehículos Norte -->
+                <div class="crud-panel" id="panel-veh-norte" style="display:none;">
+                    <div class="crud-lista" id="lista-veh-norte"></div>
+                    <div class="crud-form">
+                        <span class="crud-form-title">Agregar Vehículo</span>
+                        <input class="crud-input" id="add-veh-cod-norte"
+                               placeholder="Código (ej. N-GRU-04)">
+                        <select class="crud-select" id="add-veh-tipo-norte">
+                            <option value="GRUA">Grúa</option>
+                            <option value="MOTO">Moto</option>
+                            <option value="CAMIONETA_ASISTENCIA">Camioneta Asistencia</option>
+                            <option value="VEHICULO_LIVIANO">Vehículo Liviano</option>
+                        </select>
+                        <button class="crud-btn-add"
+                                onclick="agregarVehiculo('norte')">+ Agregar</button>
+                    </div>
                 </div>
             </div>
+            <!-- /Overlay -->
 
-            <div class="staff-panel">
-                <h5>Personal Disponible</h5>
-                <div class="staff-row"><span>Brigadistas:</span><span id="op-norte-bri" class="staff-count">—</span></div>
-                <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-norte-seg" class="staff-count">—</span></div>
-                <div class="staff-row"><span>Handyman:</span><span id="op-norte-han" class="staff-count">—</span></div>
-            </div>
-
-            <div class="vehicles-panel">
-                <h5>Vehiculos Disponibles</h5>
-                <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-norte-liv" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-norte-cam" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-norte-grua" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-norte-moto" class="vehicle-count">—</span></div>
-            </div>
-
-            <div class="actions-panel">
-                <button class="btn-atender"    id="btn-atender-norte">Atender</button>
-                <button class="btn-terminar"   id="btn-terminar-norte">Terminar</button>
-                <button class="btn-reparar"    id="btn-reparar-norte">Reparar Kit</button>
-                <div class="actions-fila-dia">
-                    <button class="btn-revertir"   id="btn-revertir-norte">Revertir</button>
-                    <button class="btn-cerrar-dia" id="btn-cerrar-norte">Terminar Dia</button>
+            <div class="card-inner" id="inner-norte">
+                <div class="card-topbar">
+                    <h3>Puesto Norte</h3>
+                    <button class="btn-gestionar" id="btn-gestionar-norte">⚙ Gestionar</button>
                 </div>
-            </div>
+                <div class="metric-group">
+                    <div class="metric">
+                        <span>Kits Libres</span>
+                        <span id="kits-norte">—</span>
+                    </div>
+                    <div class="metric">
+                        <span>En Atencion (FIFO)</span>
+                        <div id="ejecucion-norte" class="ejecucion-lista">NINGUNA</div>
+                    </div>
+                </div>
 
-            <div class="lists-container">
-                <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-norte"></ul></div>
-                <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-norte" class="pila-kits"></ul></div>
+                <div class="staff-panel">
+                    <h5>Personal Disponible</h5>
+                    <div class="staff-row"><span>Brigadistas:</span><span id="op-norte-bri" class="staff-count">—</span></div>
+                    <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-norte-seg" class="staff-count">—</span></div>
+                    <div class="staff-row"><span>Handyman:</span><span id="op-norte-han" class="staff-count">—</span></div>
+                </div>
+
+                <div class="vehicles-panel">
+                    <h5>Vehiculos Disponibles</h5>
+                    <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-norte-liv" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-norte-cam" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-norte-grua" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-norte-moto" class="vehicle-count">—</span></div>
+                </div>
+
+                <div class="actions-panel">
+                    <button class="btn-atender"  id="btn-atender-norte">Atender</button>
+                    <button class="btn-terminar" id="btn-terminar-norte">Terminar</button>
+                    <button class="btn-reparar"  id="btn-reparar-norte">Reparar Kit</button>
+                    <div class="actions-fila-dia">
+                        <button class="btn-revertir"   id="btn-revertir-norte">Revertir</button>
+                        <button class="btn-cerrar-dia" id="btn-cerrar-norte">Terminar Dia</button>
+                    </div>
+                </div>
+                <div class="lists-container">
+                    <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-norte"></ul></div>
+                    <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-norte" class="pila-kits"></ul></div>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3>Puesto Sur</h3>
-            <div class="metric-group">
-                <div class="metric">
-                    <span>Kits Libres</span>
-                    <span id="kits-sur">—</span>
+        <!-- ── Card Sur ── -->
+        <div class="card" id="card-sur">
+
+            <!-- Overlay CRUD (oculto por defecto) -->
+            <div class="crud-overlay" id="crud-sur" style="display:none;">
+                <div class="crud-header">
+                    <span class="crud-title">Gestión de Recursos — Sur</span>
+                    <button class="crud-close" id="crud-close-sur">✕</button>
                 </div>
-                <div class="metric">
-                    <span>En Atencion (FIFO)</span>
-                    <div id="ejecucion-sur" class="ejecucion-lista">NINGUNA</div>
+
+                <div class="crud-tabs">
+                    <button class="crud-tab active" id="tab-tec-sur"
+                            onclick="cambiarTab('sur','tec')">Técnicos</button>
+                    <button class="crud-tab" id="tab-veh-sur"
+                            onclick="cambiarTab('sur','veh')">Vehículos</button>
+                </div>
+
+                <!-- Panel técnicos Sur -->
+                <div class="crud-panel" id="panel-tec-sur">
+                    <div class="crud-lista" id="lista-tec-sur"></div>
+                    <div class="crud-form">
+                        <span class="crud-form-title">Agregar Técnico</span>
+                        <input class="crud-input" id="add-tec-nombre-sur"
+                               placeholder="Nombre (ej. S-BRI-04)">
+                        <select class="crud-select" id="add-tec-esp-sur">
+                            <option value="BRIGADISTA">Brigadista</option>
+                            <option value="SEGURIDAD_RUTA">Seguridad Ruta</option>
+                            <option value="HANDYMAN">Handyman</option>
+                        </select>
+                        <button class="crud-btn-add"
+                                onclick="agregarTecnico('sur')">+ Agregar</button>
+                    </div>
+                </div>
+
+                <!-- Panel vehículos Sur -->
+                <div class="crud-panel" id="panel-veh-sur" style="display:none;">
+                    <div class="crud-lista" id="lista-veh-sur"></div>
+                    <div class="crud-form">
+                        <span class="crud-form-title">Agregar Vehículo</span>
+                        <input class="crud-input" id="add-veh-cod-sur"
+                               placeholder="Código (ej. S-GRU-04)">
+                        <select class="crud-select" id="add-veh-tipo-sur">
+                            <option value="GRUA">Grúa</option>
+                            <option value="MOTO">Moto</option>
+                            <option value="CAMIONETA_ASISTENCIA">Camioneta Asistencia</option>
+                            <option value="VEHICULO_LIVIANO">Vehículo Liviano</option>
+                        </select>
+                        <button class="crud-btn-add"
+                                onclick="agregarVehiculo('sur')">+ Agregar</button>
+                    </div>
                 </div>
             </div>
+            <!-- /Overlay -->
 
-            <div class="staff-panel">
-                <h5>Personal Disponible</h5>
-                <div class="staff-row"><span>Brigadistas:</span><span id="op-sur-bri" class="staff-count">—</span></div>
-                <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-sur-seg" class="staff-count">—</span></div>
-                <div class="staff-row"><span>Handyman:</span><span id="op-sur-han" class="staff-count">—</span></div>
-            </div>
-
-            <div class="vehicles-panel">
-                <h5>Vehiculos Disponibles</h5>
-                <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-sur-liv" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-sur-cam" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-sur-grua" class="vehicle-count">—</span></div>
-                <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-sur-moto" class="vehicle-count">—</span></div>
-            </div>
-
-            <div class="actions-panel">
-                <button class="btn-atender"    id="btn-atender-sur">Atender</button>
-                <button class="btn-terminar"   id="btn-terminar-sur">Terminar</button>
-                <button class="btn-reparar"    id="btn-reparar-sur">Reparar Kit</button>
-                <div class="actions-fila-dia">
-                    <button class="btn-revertir"   id="btn-revertir-sur">Revertir</button>
-                    <button class="btn-cerrar-dia" id="btn-cerrar-sur">Terminar Dia</button>
+            <div class="card-inner" id="inner-sur">
+                <div class="card-topbar">
+                    <h3>Puesto Sur</h3>
+                    <button class="btn-gestionar" id="btn-gestionar-sur">⚙ Gestionar</button>
                 </div>
-            </div>
+                <div class="metric-group">
+                    <div class="metric">
+                        <span>Kits Libres</span>
+                        <span id="kits-sur">—</span>
+                    </div>
+                    <div class="metric">
+                        <span>En Atencion (FIFO)</span>
+                        <div id="ejecucion-sur" class="ejecucion-lista">NINGUNA</div>
+                    </div>
+                </div>
 
-            <div class="lists-container">
-                <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-sur"></ul></div>
-                <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-sur" class="pila-kits"></ul></div>
+                <div class="staff-panel">
+                    <h5>Personal Disponible</h5>
+                    <div class="staff-row"><span>Brigadistas:</span><span id="op-sur-bri" class="staff-count">—</span></div>
+                    <div class="staff-row"><span>Seguridad Ruta:</span><span id="op-sur-seg" class="staff-count">—</span></div>
+                    <div class="staff-row"><span>Handyman:</span><span id="op-sur-han" class="staff-count">—</span></div>
+                </div>
+
+                <div class="vehicles-panel">
+                    <h5>Vehiculos Disponibles</h5>
+                    <div class="vehicle-row"><span>Veh. Livianos (Medica):</span><span id="veh-sur-liv" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Camionetas (Seg./Civil):</span><span id="veh-sur-cam" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Gruas (Serv. Publicos):</span><span id="veh-sur-grua" class="vehicle-count">—</span></div>
+                    <div class="vehicle-row"><span>Motos (Serv. Apoyo):</span><span id="veh-sur-moto" class="vehicle-count">—</span></div>
+                </div>
+
+                <div class="actions-panel">
+                    <button class="btn-atender"  id="btn-atender-sur">Atender</button>
+                    <button class="btn-terminar" id="btn-terminar-sur">Terminar</button>
+                    <button class="btn-reparar"  id="btn-reparar-sur">Reparar Kit</button>
+                    <div class="actions-fila-dia">
+                        <button class="btn-revertir"   id="btn-revertir-sur">Revertir</button>
+                        <button class="btn-cerrar-dia" id="btn-cerrar-sur">Terminar Dia</button>
+                    </div>
+                </div>
+                <div class="lists-container">
+                    <div class="list-box"><h4>Cola Prioridad</h4><ul id="cola-sur"></ul></div>
+                    <div class="list-box"><h4>Pila Mantenimiento</h4><ul id="pila-sur" class="pila-kits"></ul></div>
+                </div>
             </div>
         </div>
+
     </main>
 </div>
 
+<!-- ══ MODAL DE EDICIÓN (compartido) ════════════════════════════════ -->
+<div id="edit-modal" style="display:none;">
+    <div id="edit-modal-box">
+        <div class="crud-header">
+            <span class="crud-title" id="edit-modal-title">Editar</span>
+            <button class="crud-close" onclick="cerrarModal()">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 0;">
+            <label class="crud-label" id="edit-label-a">Nombre</label>
+            <input class="crud-input" id="edit-campo-a" placeholder="">
+            <label class="crud-label" id="edit-label-b">Especialidad / Tipo</label>
+            <select class="crud-select" id="edit-campo-b"></select>
+        </div>
+        <button class="crud-btn-add" id="edit-confirm-btn">Guardar Cambios</button>
+    </div>
+</div>
+
 <script>
-    function mostrarToast(msg, ok) {
-        var t = document.getElementById("toast");
-        t.textContent = msg;
-        t.className = ok ? "ok" : "";
-        t.style.display = "block";
-        setTimeout(function() { t.style.display = "none"; }, 6000);
+// ═══════════════════════════════════════════════════════════════════
+// UTILIDADES GENERALES
+// ═══════════════════════════════════════════════════════════════════
+
+function mostrarToast(msg, ok) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = ok ? "ok" : "";
+    t.style.display = "block";
+    setTimeout(function() { t.style.display = "none"; }, 6000);
+}
+
+function llamarBridge(metodo, args) {
+    try {
+        if (typeof bridge === "undefined") { mostrarToast("bridge no disponible aun"); return; }
+        bridge[metodo].apply(bridge, args);
+    } catch (e) {
+        mostrarToast("Error Java: " + e);
+        console.error("[bridge." + metodo + "]", e);
+    }
+}
+
+function onDiaCerrado(exito, mensaje) {
+    if (exito) {
+        mostrarToast("Dia cerrado. CSV en: " + mensaje, true);
+    } else {
+        mostrarToast("Error al cerrar dia: " + mensaje);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LISTENERS — botones operativos
+// ═══════════════════════════════════════════════════════════════════
+
+document.getElementById("btnRegistrar").addEventListener("click", registrarSolicitud);
+
+["norte", "sur"].forEach(function(puesto) {
+    document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() { llamarBridge("accionAtender",  [puesto]); });
+    document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() { llamarBridge("accionTerminar", [puesto]); });
+    document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() { llamarBridge("accionReparar",  [puesto]); });
+    document.getElementById("btn-revertir-" + puesto).addEventListener("click", function() { llamarBridge("accionRevertir", [puesto]); });
+    document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
+    document.getElementById("btn-gestionar-"+ puesto).addEventListener("click", function() { abrirCrud(puesto); });
+    document.getElementById("crud-close-"   + puesto).addEventListener("click", function() { cerrarCrud(puesto); });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// REGISTRO DE SOLICITUD
+// ═══════════════════════════════════════════════════════════════════
+
+var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","norte","sur","sur","sur","norte"];
+
+function actualizarPreview() {
+    var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
+    var p   = PUESTO_POR_NODO[idx] || "norte";
+    document.getElementById("puestoPreview").textContent = "-> Puesto " + p.toUpperCase();
+}
+document.getElementById("nodoCliente").addEventListener("change", actualizarPreview);
+actualizarPreview();
+
+function registrarSolicitud() {
+    var nombre      = document.getElementById("nombre").value;
+    var telefono    = document.getElementById("telefono").value;
+    var tipo        = document.getElementById("tipoEmergencia").value;
+    var indiceNodo  = document.getElementById("nodoCliente").value;
+    var descripcion = document.getElementById("descripcion").value;
+    if (!nombre.trim() || !telefono.trim()) { mostrarToast("Por favor ingrese Nombre y Telefono."); return; }
+    document.getElementById("nombre").value      = "";
+    document.getElementById("telefono").value    = "";
+    document.getElementById("descripcion").value = "";
+    llamarBridge("registrarSolicitud", [nombre, telefono, tipo, indiceNodo, descripcion]);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CIERRE DE DÍA
+// ═══════════════════════════════════════════════════════════════════
+
+function cerrarDiaPuesto(id) {
+    var nombreVisible = id === "norte" ? "Norte" : "Sur";
+    if (!confirm("Cerrar el dia del Puesto " + nombreVisible + "?\n\n" +
+                 "- Las solicitudes EN ATENCION quedaran FINALIZADAS.\n" +
+                 "- Las solicitudes PENDIENTES se conservan para manana.\n" +
+                 "- Los kits en mantenimiento se conservan.\n" +
+                 "- El CSV se guardara en Descargas/reportes_autorescate.")) return;
+    mostrarToast("Procesando cierre...");
+    try {
+        if (typeof bridge === "undefined") { mostrarToast("Bridge no disponible."); return; }
+        if (id === "norte") { bridge.terminarDiaNorte(); } else { bridge.terminarDiaSur(); }
+    } catch(e) {
+        mostrarToast("Error al llamar Java: " + e);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OVERLAY CRUD — abrir / cerrar / tabs
+// ═══════════════════════════════════════════════════════════════════
+
+function abrirCrud(puesto) {
+    document.getElementById("crud-" + puesto).style.display = "flex";
+}
+
+function cerrarCrud(puesto) {
+    document.getElementById("crud-" + puesto).style.display = "none";
+}
+
+function cambiarTab(puesto, tab) {
+    var showTec = (tab === "tec");
+    document.getElementById("panel-tec-" + puesto).style.display = showTec ? "flex" : "none";
+    document.getElementById("panel-veh-" + puesto).style.display = showTec ? "none" : "flex";
+    document.getElementById("tab-tec-"   + puesto).className = "crud-tab" + (showTec ? " active" : "");
+    document.getElementById("tab-veh-"   + puesto).className = "crud-tab" + (!showTec ? " active" : "");
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CRUD — Agregar
+// ═══════════════════════════════════════════════════════════════════
+
+function agregarTecnico(puesto) {
+    var nombre = document.getElementById("add-tec-nombre-" + puesto).value.trim();
+    var esp    = document.getElementById("add-tec-esp-"    + puesto).value;
+    if (!nombre) { mostrarToast("Ingrese un nombre para el tecnico."); return; }
+    llamarBridge("agregarTecnico", [puesto, nombre, esp]);
+    document.getElementById("add-tec-nombre-" + puesto).value = "";
+    mostrarToast("Tecnico agregado.", true);
+}
+
+function agregarVehiculo(puesto) {
+    var codigo = document.getElementById("add-veh-cod-"  + puesto).value.trim();
+    var tipo   = document.getElementById("add-veh-tipo-" + puesto).value;
+    if (!codigo) { mostrarToast("Ingrese un codigo para el vehiculo."); return; }
+    llamarBridge("agregarVehiculo", [puesto, tipo, codigo]);
+    document.getElementById("add-veh-cod-" + puesto).value = "";
+    mostrarToast("Vehiculo agregado.", true);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CRUD — Modal de edición
+// ═══════════════════════════════════════════════════════════════════
+
+var _editCtx = null; // { puesto, tipo:'tec'|'veh', id }
+
+var ESP_OPTS = [
+    { value:"BRIGADISTA",    label:"Brigadista" },
+    { value:"SEGURIDAD_RUTA",label:"Seguridad Ruta" },
+    { value:"HANDYMAN",      label:"Handyman" }
+];
+var VEH_OPTS = [
+    { value:"GRUA",                  label:"Grua" },
+    { value:"MOTO",                  label:"Moto" },
+    { value:"CAMIONETA_ASISTENCIA",  label:"Camioneta Asistencia" },
+    { value:"VEHICULO_LIVIANO",      label:"Vehiculo Liviano" }
+];
+
+function abrirModal(puesto, tipo, id, valorA, valorB) {
+    _editCtx = { puesto: puesto, tipo: tipo, id: id };
+
+    var opts   = (tipo === "tec") ? ESP_OPTS : VEH_OPTS;
+    var labelA = (tipo === "tec") ? "Nombre"     : "Codigo";
+    var labelB = (tipo === "tec") ? "Especialidad" : "Tipo de Unidad";
+    var titulo = (tipo === "tec") ? "Editar Tecnico" : "Editar Vehiculo";
+
+    document.getElementById("edit-modal-title").textContent = titulo;
+    document.getElementById("edit-label-a").textContent     = labelA;
+    document.getElementById("edit-label-b").textContent     = labelB;
+
+    var inputA = document.getElementById("edit-campo-a");
+    inputA.value = valorA;
+
+    var selB = document.getElementById("edit-campo-b");
+    selB.innerHTML = "";
+    for (var i = 0; i < opts.length; i++) {
+        var o = document.createElement("option");
+        o.value = opts[i].value;
+        o.textContent = opts[i].label;
+        if (opts[i].value === valorB) o.selected = true;
+        selB.appendChild(o);
     }
 
-    function llamarBridge(metodo, args) {
-        try {
-            if (typeof bridge === "undefined") { mostrarToast("bridge no disponible aun"); return; }
-            bridge[metodo].apply(bridge, args);
-        } catch (e) {
-            mostrarToast("Error Java: " + e);
-            console.error("[bridge." + metodo + "]", e);
+    document.getElementById("edit-modal").style.display = "flex";
+}
+
+function cerrarModal() {
+    document.getElementById("edit-modal").style.display = "none";
+    _editCtx = null;
+}
+
+document.getElementById("edit-confirm-btn").addEventListener("click", function() {
+    if (!_editCtx) return;
+    var nuevoA = document.getElementById("edit-campo-a").value.trim();
+    var nuevoB = document.getElementById("edit-campo-b").value;
+    if (_editCtx.tipo === "tec") {
+        llamarBridge("editarTecnico", [_editCtx.puesto, _editCtx.id, nuevoA, nuevoB]);
+    } else {
+        llamarBridge("editarVehiculo", [_editCtx.puesto, _editCtx.id, nuevoA, nuevoB]);
+    }
+    mostrarToast("Cambios guardados.", true);
+    cerrarModal();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// POLLING — actualizar puesto
+// ═══════════════════════════════════════════════════════════════════
+
+var LABEL_ESP = { "BRIGADISTA":"Brigadista", "SEGURIDAD_RUTA":"Seg. Ruta", "HANDYMAN":"Handyman" };
+var LABEL_VEH = { "GRUA":"Grua", "MOTO":"Moto", "CAMIONETA_ASISTENCIA":"Camioneta", "VEHICULO_LIVIANO":"Veh. Liviano" };
+var LABEL_EST_TEC = { "DISPONIBLE":"✓", "OCUPADA":"⚙", "EN_MANTENIMIENTO":"⚠" };
+var LABEL_EST_VEH = { "DISPONIBLE":"✓", "ASIGNADO":"⚙", "EN_MANTENIMIENTO":"⚠" };
+
+function actualizarPuesto(id, d) {
+    try {
+        // ── Métricas básicas ──────────────────────────────────────────
+        var kitsEl = document.getElementById("kits-" + id);
+        if (kitsEl) kitsEl.textContent = d.kits;
+
+        var briEl = document.getElementById("op-" + id + "-bri");
+        var segEl = document.getElementById("op-" + id + "-seg");
+        var hanEl = document.getElementById("op-" + id + "-han");
+        if (briEl) briEl.textContent = d.personal.bri;
+        if (segEl) segEl.textContent = d.personal.seg;
+        if (hanEl) hanEl.textContent = d.personal.han;
+
+        if (d.vehiculos) {
+            var livEl  = document.getElementById("veh-" + id + "-liv");
+            var camEl  = document.getElementById("veh-" + id + "-cam");
+            var gruaEl = document.getElementById("veh-" + id + "-grua");
+            var motoEl = document.getElementById("veh-" + id + "-moto");
+            if (livEl)  livEl.textContent  = d.vehiculos.liv;
+            if (camEl)  camEl.textContent  = d.vehiculos.cam;
+            if (gruaEl) gruaEl.textContent = d.vehiculos.grua;
+            if (motoEl) motoEl.textContent = d.vehiculos.moto;
         }
-    }
 
-    function onDiaCerrado(exito, mensaje) {
-        if (exito) {
-            mostrarToast("Dia cerrado. CSV en: " + mensaje, true);
-        } else {
-            mostrarToast("Error al cerrar dia: " + mensaje);
-        }
-    }
+        // ── En ejecución ──────────────────────────────────────────────
+        var ejecucionEl = document.getElementById("ejecucion-" + id);
+        if (ejecucionEl) {
+            while (ejecucionEl.firstChild) ejecucionEl.removeChild(ejecucionEl.firstChild);
+            if (!d.ejecucion || d.ejecucion.length === 0) {
+                ejecucionEl.textContent = "NINGUNA";
+            } else {
+                for (var i = 0; i < d.ejecucion.length; i++) {
+                    var item = d.ejecucion[i];
+                    var div = document.createElement("div");
+                    div.className = "ejecucion-item";
 
-    document.getElementById("btnRegistrar").addEventListener("click", registrarSolicitud);
+                    var cSpan = document.createElement("span");
+                    cSpan.className = "ejecucion-cliente";
+                    cSpan.textContent = item.cliente;
 
-    ["norte", "sur"].forEach(function(puesto) {
-        document.getElementById("btn-atender-"  + puesto).addEventListener("click", function() { llamarBridge("accionAtender",  [puesto]); });
-        document.getElementById("btn-terminar-" + puesto).addEventListener("click", function() { llamarBridge("accionTerminar", [puesto]); });
-        document.getElementById("btn-reparar-"  + puesto).addEventListener("click", function() { llamarBridge("accionReparar",  [puesto]); });
-        document.getElementById("btn-cerrar-"   + puesto).addEventListener("click", function() { cerrarDiaPuesto(puesto); });
-        document.getElementById("btn-revertir-" + puesto).addEventListener("click", function() { llamarBridge("accionRevertir", [puesto]); });
-    });
+                    var fTec = document.createElement("div"); fTec.className = "ejecucion-fila";
+                    var lTec = document.createElement("span"); lTec.className = "ejecucion-label"; lTec.textContent = "Tec";
+                    var tSpan = document.createElement("span"); tSpan.className = "tag-tecnico"; tSpan.textContent = item.tecnico;
+                    fTec.appendChild(lTec); fTec.appendChild(tSpan);
 
-    var PUESTO_POR_NODO = ["norte","norte","norte","norte","norte","norte","sur","sur","sur","norte"];
+                    var fUni = document.createElement("div"); fUni.className = "ejecucion-fila";
+                    var lUni = document.createElement("span"); lUni.className = "ejecucion-label"; lUni.textContent = "Uni";
+                    var uSpan = document.createElement("span"); uSpan.className = "tag-unidad"; uSpan.textContent = item.unidad;
+                    fUni.appendChild(lUni); fUni.appendChild(uSpan);
 
-    function actualizarPreview() {
-        var idx = parseInt(document.getElementById("nodoCliente").value) || 0;
-        var p   = PUESTO_POR_NODO[idx] || "norte";
-        document.getElementById("puestoPreview").textContent = "-> Puesto " + p.toUpperCase();
-    }
-    document.getElementById("nodoCliente").addEventListener("change", actualizarPreview);
-    actualizarPreview();
-
-    function registrarSolicitud() {
-        var nombre      = document.getElementById("nombre").value;
-        var telefono    = document.getElementById("telefono").value;
-        var tipo        = document.getElementById("tipoEmergencia").value;
-        var indiceNodo  = document.getElementById("nodoCliente").value;
-        var descripcion = document.getElementById("descripcion").value;
-        if (!nombre.trim()) { mostrarToast("Por favor ingrese el Nombre."); return; }
-        if (!/^\d{10}$/.test(telefono.trim())) { mostrarToast("El telefono debe tener exactamente 10 digitos."); return; }
-        document.getElementById("nombre").value      = "";
-        document.getElementById("telefono").value    = "";
-        document.getElementById("descripcion").value = "";
-        llamarBridge("registrarSolicitud", [nombre, telefono, tipo, indiceNodo, descripcion]);
-        actualizarPreview();
-    }
-
-    function cerrarDiaPuesto(id) {
-        var nombreVisible = id === "norte" ? "Norte" : "Sur";
-        if (!confirm("Cerrar el dia del Puesto " + nombreVisible + "?\n\n" +
-                     "- Las solicitudes EN ATENCION quedaran FINALIZADAS.\n" +
-                     "- Las solicitudes PENDIENTES se conservan para manana.\n" +
-                     "- Los kits en mantenimiento se conservan.\n" +
-                     "- El CSV se guardara en Descargas/reportes_autorescate.")) return;
-        mostrarToast("Procesando cierre...");
-        try {
-            if (typeof bridge === "undefined") { mostrarToast("Bridge no disponible."); return; }
-            if (id === "norte") { bridge.terminarDiaNorte(); } else { bridge.terminarDiaSur(); }
-        } catch(e) {
-            mostrarToast("Error al llamar Java: " + e);
-            console.error("[cerrarDia]", e);
-        }
-    }
-
-    function actualizarPuesto(id, d) {
-        try {
-            var kitsEl = document.getElementById("kits-" + id);
-            if (kitsEl) kitsEl.textContent = d.kits;
-
-            var briEl = document.getElementById("op-" + id + "-bri");
-            var segEl = document.getElementById("op-" + id + "-seg");
-            var hanEl = document.getElementById("op-" + id + "-han");
-            if (briEl) briEl.textContent = d.personal.bri;
-            if (segEl) segEl.textContent = d.personal.seg;
-            if (hanEl) hanEl.textContent = d.personal.han;
-
-            if (d.vehiculos) {
-                var livEl  = document.getElementById("veh-" + id + "-liv");
-                var camEl  = document.getElementById("veh-" + id + "-cam");
-                var gruaEl = document.getElementById("veh-" + id + "-grua");
-                var motoEl = document.getElementById("veh-" + id + "-moto");
-                if (livEl)  livEl.textContent  = d.vehiculos.liv;
-                if (camEl)  camEl.textContent  = d.vehiculos.cam;
-                if (gruaEl) gruaEl.textContent = d.vehiculos.grua;
-                if (motoEl) motoEl.textContent = d.vehiculos.moto;
-            }
-
-            var ejecucionEl = document.getElementById("ejecucion-" + id);
-            if (ejecucionEl) {
-                while (ejecucionEl.firstChild) ejecucionEl.removeChild(ejecucionEl.firstChild);
-                if (!d.ejecucion || d.ejecucion.length === 0) {
-                    ejecucionEl.textContent = "NINGUNA";
-                } else {
-                    for (var i = 0; i < d.ejecucion.length; i++) {
-                        var item = d.ejecucion[i];
-                        var div = document.createElement("div");
-                        div.className = "ejecucion-item";
-
-                        var clienteSpan = document.createElement("span");
-                        clienteSpan.className = "ejecucion-cliente";
-                        clienteSpan.textContent = item.cliente;
-
-                        var filaTec = document.createElement("div");
-                        filaTec.className = "ejecucion-fila";
-                        var labelTec = document.createElement("span");
-                        labelTec.className = "ejecucion-label";
-                        labelTec.textContent = "Tec";
-                        var tecSpan = document.createElement("span");
-                        tecSpan.className = "tag-tecnico";
-                        tecSpan.textContent = item.tecnico;
-                        filaTec.appendChild(labelTec);
-                        filaTec.appendChild(tecSpan);
-
-                        var filaUni = document.createElement("div");
-                        filaUni.className = "ejecucion-fila";
-                        var labelUni = document.createElement("span");
-                        labelUni.className = "ejecucion-label";
-                        labelUni.textContent = "Uni";
-                        var uniSpan = document.createElement("span");
-                        uniSpan.className = "tag-unidad";
-                        uniSpan.textContent = item.unidad;
-                        filaUni.appendChild(labelUni);
-                        filaUni.appendChild(uniSpan);
-
-                        div.appendChild(clienteSpan);
-                        div.appendChild(filaTec);
-                        div.appendChild(filaUni);
-                        ejecucionEl.appendChild(div);
-                    }
+                    div.appendChild(cSpan); div.appendChild(fTec); div.appendChild(fUni);
+                    ejecucionEl.appendChild(div);
                 }
             }
-
-            var colaEl = document.getElementById("cola-" + id);
-            if (colaEl) {
-                while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
-                if (d.cola) {
-                    for (var j = 0; j < d.cola.length; j++) {
-                        var li = document.createElement("li");
-                        li.textContent = d.cola[j];
-                        colaEl.appendChild(li);
-                    }
-                }
-            }
-
-            var pilaEl = document.getElementById("pila-" + id);
-            if (pilaEl) {
-                while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
-                if (d.pila) {
-                    for (var k = 0; k < d.pila.length; k++) {
-                        var liKit = document.createElement("li");
-                        liKit.textContent = d.pila[k];
-                        pilaEl.appendChild(liKit);
-                    }
-                }
-            }
-        } catch (e) {
-            console.error("[actualizarPuesto:" + id + "]", e);
         }
+
+        // ── Cola de prioridad ─────────────────────────────────────────
+        var colaEl = document.getElementById("cola-" + id);
+        if (colaEl) {
+            while (colaEl.firstChild) colaEl.removeChild(colaEl.firstChild);
+            if (d.cola) {
+                for (var j = 0; j < d.cola.length; j++) {
+                    var li = document.createElement("li");
+                    li.textContent = d.cola[j];
+                    colaEl.appendChild(li);
+                }
+            }
+        }
+
+        // ── Pila de kits ──────────────────────────────────────────────
+        var pilaEl = document.getElementById("pila-" + id);
+        if (pilaEl) {
+            while (pilaEl.firstChild) pilaEl.removeChild(pilaEl.firstChild);
+            if (d.pila) {
+                for (var k = 0; k < d.pila.length; k++) {
+                    var liKit = document.createElement("li");
+                    liKit.textContent = d.pila[k];
+                    pilaEl.appendChild(liKit);
+                }
+            }
+        }
+
+        // ── Listas CRUD (solo si el overlay está abierto) ─────────────
+        var overlay = document.getElementById("crud-" + id);
+        if (overlay && overlay.style.display !== "none") {
+            if (d.tecnicosLista)  renderListaTecnicos(id, d.tecnicosLista);
+            if (d.vehiculosLista) renderListaVehiculos(id, d.vehiculosLista);
+        }
+
+    } catch (e) {
+        console.error("[actualizarPuesto:" + id + "]", e);
     }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER LISTAS CRUD
+// ═══════════════════════════════════════════════════════════════════
+
+function renderListaTecnicos(puesto, lista) {
+    var contenedor = document.getElementById("lista-tec-" + puesto);
+    if (!contenedor) return;
+    while (contenedor.firstChild) contenedor.removeChild(contenedor.firstChild);
+
+    for (var i = 0; i < lista.length; i++) {
+        var t   = lista[i];
+        var row = crearFilaCrud(
+            t.id,
+            t.id.substring(0, 8).toUpperCase(),
+            t.nombre,
+            LABEL_ESP[t.especialidad] || t.especialidad,
+            t.estado,
+            LABEL_EST_TEC[t.estado] || t.estado,
+            t.estado === "OCUPADA",      // bloqueado si está en servicio
+            (function(p, id, nombre, esp) {
+                return function() { abrirModal(p, "tec", id, nombre, esp); };
+            })(puesto, t.id, t.nombre, t.especialidad)
+        );
+        contenedor.appendChild(row);
+    }
+}
+
+function renderListaVehiculos(puesto, lista) {
+    var contenedor = document.getElementById("lista-veh-" + puesto);
+    if (!contenedor) return;
+    while (contenedor.firstChild) contenedor.removeChild(contenedor.firstChild);
+
+    for (var i = 0; i < lista.length; i++) {
+        var v   = lista[i];
+        var row = crearFilaCrud(
+            v.id,
+            v.id.substring(0, 8).toUpperCase(),
+            v.codigo,
+            LABEL_VEH[v.tipo] || v.tipo,
+            v.estado,
+            LABEL_EST_VEH[v.estado] || v.estado,
+            v.estado === "ASIGNADO",     // bloqueado si está en servicio
+            (function(p, id, codigo, tipo) {
+                return function() { abrirModal(p, "veh", id, codigo, tipo); };
+            })(puesto, v.id, v.codigo, v.tipo)
+        );
+        contenedor.appendChild(row);
+    }
+}
+
+/**
+ * Construye una fila de la tabla CRUD.
+ * @param {string} id          UUID completo (para data attribute)
+ * @param {string} idCorto     Primeros 8 chars del UUID (display)
+ * @param {string} valorA      Nombre / Código
+ * @param {string} valorB      Especialidad / Tipo
+ * @param {string} estado      Estado raw (DISPONIBLE, OCUPADA, etc.)
+ * @param {string} estadoLabel Texto corto del estado
+ * @param {boolean} bloqueado  Si true, el botón Editar está deshabilitado
+ * @param {function} onEdit    Callback al pulsar Editar
+ */
+function crearFilaCrud(id, idCorto, valorA, valorB, estado, estadoLabel, bloqueado, onEdit) {
+    var row = document.createElement("div");
+    row.className = "crud-row";
+
+    var estadoClass = "crud-estado-disp";
+    if (estado === "OCUPADA" || estado === "ASIGNADO") estadoClass = "crud-estado-ocup";
+    if (estado === "EN_MANTENIMIENTO")                 estadoClass = "crud-estado-mant";
+
+    var html =
+        "<span class='crud-row-id'>" + idCorto + "</span>" +
+        "<span class='crud-row-nombre'>" + valorA + "</span>" +
+        "<span class='crud-row-tipo'>"   + valorB + "</span>" +
+        "<span class='crud-estado " + estadoClass + "'>" + estadoLabel + " " + estado + "</span>";
+
+    row.innerHTML = html;
+
+    var btn = document.createElement("button");
+    btn.className = "crud-btn-edit";
+    btn.textContent = "Editar";
+    btn.disabled = bloqueado;
+    if (bloqueado) btn.title = "No se puede editar: recurso en servicio activo";
+    btn.addEventListener("click", onEdit);
+    row.appendChild(btn);
+
+    return row;
+}
 </script>
 
 </body>

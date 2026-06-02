@@ -42,15 +42,10 @@ public class PuestoAtencion {
     // Operaciones principales
     // ------------------------------------------------------------------
 
-    /**
-     * Toma la solicitud de mayor prioridad, le asigna un técnico Y una unidad
-     * disponibles, y la mueve a la cola FIFO de ejecución.
-     */
     public boolean atenderSiguiente() {
         if (solicitudesPendientes.esVacia()) return false;
         if (stockKitsManuales <= 0)          return false;
 
-        // Busca la primera solicitud cuyo técnico Y unidad requeridos estén disponibles
         SolicitudServicio candidata  = null;
         Tecnico           tec        = null;
         UnidadServicio    unidad     = null;
@@ -89,10 +84,6 @@ public class PuestoAtencion {
         return true;
     }
 
-    /**
-     * Finaliza la solicitud activa más antigua (FIFO), libera el técnico
-     * y la unidad asignados, y coloca un kit gastado en la pila de mantenimiento.
-     */
     public boolean terminarSolicitudActiva() {
         if (solicitudesEnEjecucion.esVacia()) return false;
 
@@ -102,8 +93,6 @@ public class PuestoAtencion {
         if (sol.getTecnicoAsignado() != null) {
             sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
         }
-
-        // ← NUEVO: liberar la unidad asignada
         if (sol.getUnidadAsignada() != null) {
             sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
         }
@@ -112,6 +101,28 @@ public class PuestoAtencion {
         kitGastado.setCompleto(false);
         pilaKitsDañados.push(kitGastado);
 
+        return true;
+    }
+
+    public boolean revertirUltimaEjecucion() {
+        if (solicitudesEnEjecucion.esVacia()) return false;
+
+        SolicitudServicio sol = solicitudesEnEjecucion.desencolarUltimo();
+        if (sol == null) return false;
+
+        if (sol.getTecnicoAsignado() != null) {
+            sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
+            sol.setTecnicoAsignado(null);
+        }
+        if (sol.getUnidadAsignada() != null) {
+            sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
+            sol.setUnidadAsignada(null);
+        }
+
+        sol.setEstado(EstadoSolicitud.PENDIENTE);
+        stockKitsManuales++;
+
+        solicitudesPendientes.insertar(sol);
         return true;
     }
 
@@ -158,6 +169,109 @@ public class PuestoAtencion {
     }
 
     // ------------------------------------------------------------------
+    // CRUD — Técnicos  (RF-07)
+    // ------------------------------------------------------------------
+
+    /**
+     * Agrega un nuevo técnico al puesto con estado DISPONIBLE.
+     *
+     * @param nombre      identificador/nombre del técnico
+     * @param especialidad especialidad requerida
+     * @return el técnico creado
+     */
+    public Tecnico agregarTecnico(String nombre, Especialidad especialidad) {
+        Tecnico t = new Tecnico(nombre, especialidad, EstadoTecnico.DISPONIBLE, indice);
+        tecnicos.agregar(t);
+        return t;
+    }
+
+    /**
+     * Edita el nombre y/o la especialidad de un técnico existente buscándolo por id.
+     * No se permite editar un técnico con estado OCUPADA (está en servicio activo).
+     *
+     * @param id           UUID del técnico a editar
+     * @param nuevoNombre  nuevo nombre (null o vacío = sin cambio)
+     * @param nuevaEsp     nueva especialidad (null = sin cambio)
+     * @return true si se encontró y editó, false si no existe o está OCUPADA
+     */
+    public boolean editarTecnico(String id, String nuevoNombre, Especialidad nuevaEsp) {
+        if (id == null) return false;
+        Nodo<Tecnico> actual = tecnicos.getCabeza();
+        while (actual != null) {
+            Tecnico t = actual.getDato();
+            if (t.getId().equals(id)) {
+                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; // en servicio
+                if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+                    // Tecnico.nombre es final → necesitamos reemplazar el nodo
+                    Tecnico editado = new Tecnico(
+                        nuevoNombre.trim(),
+                        nuevaEsp != null ? nuevaEsp : t.getEspecialidad(),
+                        t.getEstado(),
+                        t.getZona()
+                    );
+                    // Preservar el mismo id no es posible (final), usamos el nuevo objeto
+                    actual.setDato(editado);
+                } else if (nuevaEsp != null) {
+                    Tecnico editado = new Tecnico(
+                        t.getNombre(),
+                        nuevaEsp,
+                        t.getEstado(),
+                        t.getZona()
+                    );
+                    actual.setDato(editado);
+                }
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
+    // ------------------------------------------------------------------
+    // CRUD — Unidades de servicio  (RF-08)
+    // ------------------------------------------------------------------
+
+    /**
+     * Agrega una nueva unidad al puesto con estado DISPONIBLE.
+     *
+     * @param tipo   tipo de unidad
+     * @param codigo código identificador (ej. "N-GRU-04")
+     * @return la unidad creada
+     */
+    public UnidadServicio agregarUnidad(TipoUnidad tipo, String codigo) {
+        UnidadServicio u = new UnidadServicio(tipo, EstadoUnidad.DISPONIBLE, indice, codigo);
+        unidades.agregar(u);
+        return u;
+    }
+
+    /**
+     * Edita el código y/o tipo de una unidad existente buscándola por id.
+     * No se permite editar una unidad con estado ASIGNADO (está en servicio activo).
+     *
+     * @param id        UUID de la unidad a editar
+     * @param nuevoCod  nuevo código (null o vacío = sin cambio)
+     * @param nuevoTipo nuevo tipo (null = sin cambio)
+     * @return true si se encontró y editó, false si no existe o está ASIGNADO
+     */
+    public boolean editarUnidad(String id, String nuevoCod, TipoUnidad nuevoTipo) {
+        if (id == null) return false;
+        Nodo<UnidadServicio> actual = unidades.getCabeza();
+        while (actual != null) {
+            UnidadServicio u = actual.getDato();
+            if (u.getId().equals(id)) {
+                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; // en servicio
+                String  cod  = (nuevoCod  != null && !nuevoCod.trim().isEmpty())  ? nuevoCod.trim()  : u.getCodigo();
+                TipoUnidad tp = nuevoTipo != null ? nuevoTipo : u.getTipo();
+                UnidadServicio editada = new UnidadServicio(tp, u.getEstado(), u.getZona(), cod);
+                actual.setDato(editada);
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
+    // ------------------------------------------------------------------
     // Getters
     // ------------------------------------------------------------------
 
@@ -182,7 +296,6 @@ public class PuestoAtencion {
             if (sol.getTecnicoAsignado() != null) {
                 sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
             }
-            // ← NUEVO: liberar la unidad también al cerrar el día
             if (sol.getUnidadAsignada() != null) {
                 sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
             }
@@ -216,30 +329,7 @@ public class PuestoAtencion {
         for (int i = 1; i <= 7; i++)
             tecnicos.agregar(new Tecnico(p + "-HAN-" + fmt(i), HANDYMAN,       EstadoTecnico.DISPONIBLE, indice));
     }
-    public boolean revertirUltimaEjecucion() {
-        if (solicitudesEnEjecucion.esVacia()) return false;
 
-        SolicitudServicio sol = solicitudesEnEjecucion.desencolarUltimo();
-        if (sol == null) return false;
-
-        // Liberar técnico
-        if (sol.getTecnicoAsignado() != null) {
-            sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
-            sol.setTecnicoAsignado(null);
-        }
-        // Liberar unidad
-        if (sol.getUnidadAsignada() != null) {
-            sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
-            sol.setUnidadAsignada(null);
-        }
-        // Restaurar estado y kit
-        sol.setEstado(EstadoSolicitud.PENDIENTE);
-        stockKitsManuales++;   // el kit "vuelve" porque nunca se dañó
-
-        // Reinsertar en cola de prioridad con su posición original
-        solicitudesPendientes.insertar(sol);
-        return true;
-    }
     private static String fmt(int n) {
         return n < 10 ? "0" + n : String.valueOf(n);
     }
