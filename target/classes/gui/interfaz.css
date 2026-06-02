@@ -465,6 +465,21 @@ body {
 .crud-btn-edit:hover:not(:disabled) { background: #ffffff; color: #000000; border-color: #ffffff; }
 .crud-btn-edit:disabled { opacity: 0.3; cursor: not-allowed; }
 
+.crud-btn-del {
+    background: #1f1f1f;
+    border: 1px solid #5a1a1a;
+    color: #f87171;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.crud-btn-del:hover:not(:disabled) { background: #dc2626; color: #ffffff; border-color: #dc2626; }
+.crud-btn-del:disabled { opacity: 0.3; cursor: not-allowed; }
+
 /* ── Formulario de agregar ── */
 .crud-form {
     display: flex;

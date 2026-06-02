@@ -116,6 +116,16 @@ public class GuiController {
         } catch (Exception e) {}
     }
 
+    public void eliminarTecnico(String puestoId, String id) {
+        try { GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).eliminarTecnico(id); }
+        catch (Exception e) {}
+    }
+
+    public void eliminarVehiculo(String puestoId, String id) {
+        try { GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).eliminarUnidad(id); }
+        catch (Exception e) {}
+    }
+
     public void terminarDiaNorte() { terminarDiaPuesto(0); }
     public void terminarDiaSur()   { terminarDiaPuesto(1); }
 

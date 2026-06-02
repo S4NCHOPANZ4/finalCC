@@ -223,6 +223,36 @@ public class PuestoAtencion {
         return false;
     }
 
+    public boolean eliminarTecnico(String id) {
+        if (id == null) return false;
+        Nodo<Tecnico> actual = tecnicos.getCabeza();
+        while (actual != null) {
+            Tecnico t = actual.getDato();
+            if (t.getId().equals(id)) {
+                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; // en servicio activo
+                tecnicos.eliminar(t);
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
+    public boolean eliminarUnidad(String id) {
+        if (id == null) return false;
+        Nodo<UnidadServicio> actual = unidades.getCabeza();
+        while (actual != null) {
+            UnidadServicio u = actual.getDato();
+            if (u.getId().equals(id)) {
+                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; // en servicio activo
+                unidades.eliminar(u);
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
 
     public int getIndice(){ return indice; }
     public String getNombre(){ return nombre; }

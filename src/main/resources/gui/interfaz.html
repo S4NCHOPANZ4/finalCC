@@ -607,7 +607,10 @@ function renderListaTecnicos(puesto, lista) {
             t.estado === "OCUPADA",      // bloqueado si está en servicio
             (function(p, id, nombre, esp) {
                 return function() { abrirModal(p, "tec", id, nombre, esp); };
-            })(puesto, t.id, t.nombre, t.especialidad)
+            })(puesto, t.id, t.nombre, t.especialidad),
+            (function(p, id, nombre) {
+                return function() { eliminarRecurso(p, "tec", id, nombre); };
+            })(puesto, t.id, t.nombre)
         );
         contenedor.appendChild(row);
     }
@@ -630,7 +633,10 @@ function renderListaVehiculos(puesto, lista) {
             v.estado === "ASIGNADO",     // bloqueado si está en servicio
             (function(p, id, codigo, tipo) {
                 return function() { abrirModal(p, "veh", id, codigo, tipo); };
-            })(puesto, v.id, v.codigo, v.tipo)
+            })(puesto, v.id, v.codigo, v.tipo),
+            (function(p, id, codigo) {
+                return function() { eliminarRecurso(p, "veh", id, codigo); };
+            })(puesto, v.id, v.codigo)
         );
         contenedor.appendChild(row);
     }
@@ -646,8 +652,9 @@ function renderListaVehiculos(puesto, lista) {
  * @param {string} estadoLabel Texto corto del estado
  * @param {boolean} bloqueado  Si true, el botón Editar está deshabilitado
  * @param {function} onEdit    Callback al pulsar Editar
+ * @param {function} onDelete  Callback al pulsar Borrar
  */
-function crearFilaCrud(id, idCorto, valorA, valorB, estado, estadoLabel, bloqueado, onEdit) {
+function crearFilaCrud(id, idCorto, valorA, valorB, estado, estadoLabel, bloqueado, onEdit, onDelete) {
     var row = document.createElement("div");
     row.className = "crud-row";
 
@@ -671,7 +678,29 @@ function crearFilaCrud(id, idCorto, valorA, valorB, estado, estadoLabel, bloquea
     btn.addEventListener("click", onEdit);
     row.appendChild(btn);
 
+    var btnDel = document.createElement("button");
+    btnDel.className = "crud-btn-del";
+    btnDel.textContent = "✕";
+    btnDel.disabled = bloqueado;
+    if (bloqueado) btnDel.title = "No se puede eliminar: recurso en servicio activo";
+    btnDel.addEventListener("click", onDelete);
+    row.appendChild(btnDel);
+
     return row;
+}
+// ═══════════════════════════════════════════════════════════════════
+// CRUD — Eliminar
+// ═══════════════════════════════════════════════════════════════════
+
+function eliminarRecurso(puesto, tipo, id, nombre) {
+    var tipoLabel = (tipo === "tec") ? "técnico" : "vehículo";
+    if (!confirm("¿Eliminar " + tipoLabel + " \"" + nombre + "\"?\nEsta acción no se puede deshacer.")) return;
+    if (tipo === "tec") {
+        llamarBridge("eliminarTecnico", [puesto, id]);
+    } else {
+        llamarBridge("eliminarVehiculo", [puesto, id]);
+    }
+    mostrarToast(tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1) + " eliminado.", true);
 }
 </script>
 

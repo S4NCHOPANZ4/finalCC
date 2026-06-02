@@ -73,4 +73,14 @@ public class JSBridge {
         try { controller.editarVehiculo(puestoId, id, nuevoCod, nuevoTipo); }
         catch (Exception e) {}
     }
+
+    public void eliminarTecnico(String puestoId, String id) {
+        try { controller.eliminarTecnico(puestoId, id); }
+        catch (Exception e) {}
+    }
+
+    public void eliminarVehiculo(String puestoId, String id) {
+        try { controller.eliminarVehiculo(puestoId, id); }
+        catch (Exception e) {}
+    }
 }
