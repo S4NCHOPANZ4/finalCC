@@ -211,7 +211,7 @@ public class PuestoAtencion {
         while (actual != null) {
             UnidadServicio u = actual.getDato();
             if (u.getId().equals(id)) {
-                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; // en servicio
+                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; 
                 String  cod  = (nuevoCod  != null && !nuevoCod.trim().isEmpty())  ? nuevoCod.trim()  : u.getCodigo();
                 TipoUnidad tp = nuevoTipo != null ? nuevoTipo : u.getTipo();
                 UnidadServicio editada = new UnidadServicio(tp, u.getEstado(), u.getZona(), cod);
@@ -229,7 +229,7 @@ public class PuestoAtencion {
         while (actual != null) {
             Tecnico t = actual.getDato();
             if (t.getId().equals(id)) {
-                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; // en servicio activo
+                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; 
                 tecnicos.eliminar(t);
                 return true;
             }
@@ -244,7 +244,7 @@ public class PuestoAtencion {
         while (actual != null) {
             UnidadServicio u = actual.getDato();
             if (u.getId().equals(id)) {
-                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; // en servicio activo
+                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; 
                 unidades.eliminar(u);
                 return true;
             }
