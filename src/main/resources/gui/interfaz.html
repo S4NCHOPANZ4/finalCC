@@ -200,7 +200,8 @@
         var tipo        = document.getElementById("tipoEmergencia").value;
         var indiceNodo  = document.getElementById("nodoCliente").value;
         var descripcion = document.getElementById("descripcion").value;
-        if (!nombre.trim() || !telefono.trim()) { mostrarToast("Por favor ingrese Nombre y Telefono."); return; }
+        if (!nombre.trim()) { mostrarToast("Por favor ingrese el Nombre."); return; }
+        if (!/^\d{10}$/.test(telefono.trim())) { mostrarToast("El telefono debe tener exactamente 10 digitos."); return; }
         document.getElementById("nombre").value      = "";
         document.getElementById("telefono").value    = "";
         document.getElementById("descripcion").value = "";
