@@ -13,7 +13,7 @@ public class Gui extends Application {
 
     private static WebEngine engine;
     private final GuiController controller = new GuiController();
-    private final JSBridge bridge = new JSBridge();
+    private final JSBridge bridge = new JSBridge(controller);
 
     public static WebEngine getEngine() { return engine; }
 

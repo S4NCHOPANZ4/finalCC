@@ -1,4 +1,0 @@
---patch-module
-co.ciencias.finalcc=_
---add-reads
-co.ciencias.finalcc=ALL-UNNAMED
