@@ -49,18 +49,13 @@ public class GuiController {
         try {
             if (nombre == null || nombre.trim().isEmpty()) return;
             if (telefono == null || telefono.trim().isEmpty()) return;
-
             Cliente cliente = new Cliente(nombre.trim(), telefono.trim());
-
             int idx = 0;
             try { idx = Integer.parseInt(indiceNodo.trim()); } catch (NumberFormatException ignored) {}
             int maxNodo = GrafoCiudad.getInstancia().getCantidadNodos() - 1;
-            if (idx < 0)       idx = 0;
+            if (idx < 0) idx = 0;
             if (idx > maxNodo) idx = maxNodo;
-
-            GestorSolicitudes.getInstancia().crearSolicitud(
-                cliente, TipoEmergencia.valueOf(tipo.trim()),
-                descripcion == null ? "" : descripcion, idx);
+            GestorSolicitudes.getInstancia().crearSolicitud( cliente, TipoEmergencia.valueOf(tipo.trim()), descripcion == null ? "" : descripcion, idx);
         } catch (Exception e) {}
     }
 
@@ -89,20 +84,17 @@ public class GuiController {
         try {
             if (nombre == null || nombre.trim().isEmpty()) return;
             Especialidad esp = Especialidad.valueOf(especialidad.trim());
-            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId))
-                          .agregarTecnico(nombre.trim(), esp);
+            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).agregarTecnico(nombre.trim(), esp);
         } catch (Exception e) {}
     }
 
-    public void editarTecnico(String puestoId, String id,
-                               String nuevoNombre, String nuevaEsp) {
+    public void editarTecnico(String puestoId, String id, String nuevoNombre, String nuevaEsp) {
         try {
             Especialidad esp = null;
             if (nuevaEsp != null && !nuevaEsp.trim().isEmpty()) {
                 esp = Especialidad.valueOf(nuevaEsp.trim());
             }
-            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId))
-                          .editarTecnico(id, nuevoNombre, esp);
+            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).editarTecnico(id, nuevoNombre, esp);
         } catch (Exception e) {}
     }
 
@@ -110,20 +102,17 @@ public class GuiController {
         try {
             if (codigo == null || codigo.trim().isEmpty()) return;
             TipoUnidad tu = TipoUnidad.valueOf(tipo.trim());
-            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId))
-                          .agregarUnidad(tu, codigo.trim());
+            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).agregarUnidad(tu, codigo.trim());
         } catch (Exception e) {}
     }
 
-    public void editarVehiculo(String puestoId, String id,
-                                String nuevoCod, String nuevoTipo) {
+    public void editarVehiculo(String puestoId, String id, String nuevoCod, String nuevoTipo) {
         try {
             TipoUnidad tu = null;
             if (nuevoTipo != null && !nuevoTipo.trim().isEmpty()) {
                 tu = TipoUnidad.valueOf(nuevoTipo.trim());
             }
-            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId))
-                          .editarUnidad(id, nuevoCod, tu);
+            GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).editarUnidad(id, nuevoCod, tu);
         } catch (Exception e) {}
     }
 
@@ -134,7 +123,6 @@ public class GuiController {
         try {
             GestorRecursos.getInstancia().getPuesto(idx).cerrarDia();
             String ruta = GestorSolicitudes.getInstancia().generarCsvDia(idx);
-
             String script;
             if (ruta != null && !ruta.isEmpty() && !ruta.startsWith("ERROR")) {
                 String rutaEscapada = ruta.replace("\\", "\\\\").replace("'", "\\'");
@@ -144,16 +132,17 @@ public class GuiController {
             }
             final String scriptFinal = script;
             Platform.runLater(() -> {
-                try { Gui.getEngine().executeScript(scriptFinal); } catch (Exception e) {}
+                try { 
+                    Gui.getEngine().executeScript(scriptFinal); 
+                } catch (Exception e) {}
             });
         } catch (Exception e) {
             String raw = e.getMessage();
-            String msg = raw == null ? "error desconocido"
-                                     : raw.replace("\\", "\\\\").replace("'", "\\'");
+            String msg = raw == null ? "error desconocido" : raw.replace("\\", "\\\\").replace("'", "\\'");
             final String msgFinal = msg;
             Platform.runLater(() -> {
-                try { Gui.getEngine().executeScript(
-                        "onDiaCerrado(false, 'ERROR: " + msgFinal + "');");
+                try { 
+                    Gui.getEngine().executeScript("onDiaCerrado(false, 'ERROR: " + msgFinal + "');");
                 } catch (Exception ex) {}
             });
         }
@@ -164,8 +153,7 @@ public class GuiController {
         try {
             PuestoAtencion p = GestorRecursos.getInstancia().getPuesto(idx);
             if (p == null) return;
-            Gui.getEngine().executeScript(
-                "actualizarPuesto('" + id + "', " + construirJson(p) + ");");
+            Gui.getEngine().executeScript("actualizarPuesto('" + id + "', " + construirJson(p) + ");");
         } catch (Exception e) {}
     }
 
@@ -177,55 +165,63 @@ public class GuiController {
         while (nodoEj != null) {
             if (!primero) ejecucion.append(",");
             SolicitudServicio sol = nodoEj.getDato();
-            String tec = sol.getTecnicoAsignado() != null ? sol.getTecnicoAsignado().getNombre() : "Sin tecnico";
-            String uni = sol.getUnidadAsignada()  != null ? sol.getUnidadAsignada().getCodigo()  : "Sin unidad";
+            String tec = "";
+            if (sol.getTecnicoAsignado() != null) {
+                tec = sol.getTecnicoAsignado().getNombre();
+            } else {
+                tec = "Sin tecnico";
+            }
+            String uni = "";
+            if (sol.getUnidadAsignada() != null) {
+                uni = sol.getUnidadAsignada().getCodigo();
+            } else {
+                uni = "Sin unidad";
+            }
             ejecucion.append("{").append("\"cliente\":\"").append(esc(sol.getCliente().getNombre())).append("\",").append("\"tecnico\":\"").append(esc(tec)).append("\",").append("\"unidad\":\"").append(esc(uni)).append("\"").append("}");
             primero = false;
             nodoEj  = nodoEj.getSiguiente();
         }
         ejecucion.append("]");
 
-        int bri = 0, seg = 0, han = 0;
+        int bri = 0;
+        int seg = 0;
+        int han = 0;
         Nodo<Tecnico> nodoTec = p.getTecnicos().getCabeza();
         while (nodoTec != null) {
             Tecnico t = nodoTec.getDato();
             if (t.getEstado() == EstadoTecnico.DISPONIBLE) {
-                if (t.getEspecialidad() == Especialidad.BRIGADISTA)     bri++;
+                if (t.getEspecialidad() == Especialidad.BRIGADISTA) bri++;
                 if (t.getEspecialidad() == Especialidad.SEGURIDAD_RUTA) seg++;
-                if (t.getEspecialidad() == Especialidad.HANDYMAN)       han++;
+                if (t.getEspecialidad() == Especialidad.HANDYMAN) han++;
             }
             nodoTec = nodoTec.getSiguiente();
         }
 
-        // ── Vehículos disponibles (contadores) ────────────────────────
         int vGrua = 0, vMoto = 0, vCam = 0, vLiv = 0;
         Nodo<UnidadServicio> nodoUni = p.getUnidades().getCabeza();
         while (nodoUni != null) {
             UnidadServicio u = nodoUni.getDato();
             if (u.getEstado() == EstadoUnidad.DISPONIBLE) {
-                if (u.getTipo() == TipoUnidad.GRUA)                 vGrua++;
-                if (u.getTipo() == TipoUnidad.MOTO)                 vMoto++;
+                if (u.getTipo() == TipoUnidad.GRUA) vGrua++;
+                if (u.getTipo() == TipoUnidad.MOTO) vMoto++;
                 if (u.getTipo() == TipoUnidad.CAMIONETA_ASISTENCIA) vCam++;
-                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO)     vLiv++;
+                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO) vLiv++;
             }
             nodoUni = nodoUni.getSiguiente();
         }
 
-        // ── Cola de prioridad ─────────────────────────────────────────
         StringBuilder cola = new StringBuilder("[");
         Nodo<SolicitudServicio> nodoCola = p.getSolicitudesPendientes().getCabeza();
         boolean primeroCola = true;
         while (nodoCola != null) {
             if (!primeroCola) cola.append(",");
-            String item = nodoCola.getDato().getCliente().getNombre()
-                        + " (" + nodoCola.getDato().getTipoEmergencia().name() + ")";
+            String item = nodoCola.getDato().getCliente().getNombre() + " (" + nodoCola.getDato().getTipoEmergencia().name() + ")";
             cola.append("\"").append(esc(item)).append("\"");
             primeroCola = false;
-            nodoCola    = nodoCola.getSiguiente();
+            nodoCola = nodoCola.getSiguiente();
         }
         cola.append("]");
 
-        // ── Pila de kits dañados ──────────────────────────────────────
         StringBuilder pila = new StringBuilder("[");
         Nodo<Kit> nodoKit = p.getPilaKitsDañados().getTope();
         boolean primeroPila = true;
@@ -235,59 +231,45 @@ public class GuiController {
             String subId = kitId.substring(0, Math.min(5, kitId.length())).toUpperCase();
             pila.append("\"").append(esc("Kit ID: " + subId)).append("\"");
             primeroPila = false;
-            nodoKit     = nodoKit.getSiguiente();
+            nodoKit = nodoKit.getSiguiente();
         }
         pila.append("]");
 
-        // ── Lista completa de técnicos (para panel CRUD) ──────────────
         StringBuilder tecLista = new StringBuilder("[");
         Nodo<Tecnico> nt = p.getTecnicos().getCabeza();
         boolean pt = true;
         while (nt != null) {
             if (!pt) tecLista.append(",");
             Tecnico t = nt.getDato();
-            tecLista.append("{")
-                    .append("\"id\":\"").append(esc(t.getId())).append("\",")
-                    .append("\"nombre\":\"").append(esc(t.getNombre())).append("\",")
-                    .append("\"especialidad\":\"").append(t.getEspecialidad().name()).append("\",")
-                    .append("\"estado\":\"").append(t.getEstado().name()).append("\"")
-                    .append("}");
+            tecLista.append("{").append("\"id\":\"").append(esc(t.getId())).append("\",").append("\"nombre\":\"").append(esc(t.getNombre())).append("\",").append("\"especialidad\":\"").append(t.getEspecialidad().name()).append("\",").append("\"estado\":\"").append(t.getEstado().name()).append("\"").append("}");
             pt = false;
             nt = nt.getSiguiente();
         }
         tecLista.append("]");
 
-        // ── Lista completa de vehículos (para panel CRUD) ─────────────
         StringBuilder vehLista = new StringBuilder("[");
         Nodo<UnidadServicio> nv = p.getUnidades().getCabeza();
         boolean pv = true;
         while (nv != null) {
             if (!pv) vehLista.append(",");
             UnidadServicio u = nv.getDato();
-            vehLista.append("{")
-                    .append("\"id\":\"").append(esc(u.getId())).append("\",")
-                    .append("\"codigo\":\"").append(esc(u.getCodigo())).append("\",")
-                    .append("\"tipo\":\"").append(u.getTipo().name()).append("\",")
-                    .append("\"estado\":\"").append(u.getEstado().name()).append("\"")
-                    .append("}");
+            vehLista.append("{").append("\"id\":\"").append(esc(u.getId())).append("\",").append("\"codigo\":\"").append(esc(u.getCodigo())).append("\",").append("\"tipo\":\"").append(u.getTipo().name()).append("\",").append("\"estado\":\"").append(u.getEstado().name()).append("\"").append("}");
             pv = false;
             nv = nv.getSiguiente();
         }
         vehLista.append("]");
 
-        return "{\"kits\":"         + p.getContadorKits()
+        return "{\"kits\":" + p.getContadorKits()
              + ",\"ejecucion\":"    + ejecucion
              + ",\"personal\":{\"bri\":" + bri + ",\"seg\":" + seg + ",\"han\":" + han + "}"
-             + ",\"vehiculos\":{\"grua\":" + vGrua + ",\"moto\":" + vMoto
-                              + ",\"cam\":"  + vCam  + ",\"liv\":"  + vLiv  + "}"
-             + ",\"cola\":"         + cola
-             + ",\"pila\":"         + pila
+             + ",\"vehiculos\":{\"grua\":" + vGrua + ",\"moto\":" + vMoto + ",\"cam\":"  + vCam  + ",\"liv\":"  + vLiv  + "}"
+             + ",\"cola\":" + cola
+             + ",\"pila\":" + pila
              + ",\"tecnicosLista\":" + tecLista
              + ",\"vehiculosLista\":" + vehLista
              + "}";
     }
 
-    // ── Utilidades ────────────────────────────────────────────────────
 
     private int indiceDe(String id) {
         if (id == null) return 0;

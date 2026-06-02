@@ -35,11 +35,6 @@ public class NodoGrafo {
     @Override
     public String toString() { return nombre; }
 
-    // ------------------------------------------------------------------
-    // Arista interna: par (destino, peso)
-    // ------------------------------------------------------------------
-
-    /** Par (nodo destino, peso) que forma una arista del grafo. */
     public static class AristaGrafo {
         private final NodoGrafo destino;
         private final int       peso;
@@ -49,7 +44,7 @@ public class NodoGrafo {
             this.peso    = peso;
         }
 
-        public NodoGrafo getDestino() { return destino; }
-        public int getPeso()          { return peso;    }
+        public NodoGrafo getDestino(){return destino; }
+        public int getPeso(){ return peso;    }
     }
 }

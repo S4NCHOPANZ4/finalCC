@@ -24,29 +24,14 @@ public class GestorSolicitudes {
         return instancia;
     }
 
-    /**
-     * Crea una solicitud y la encola en el puesto más cercano al nodo del cliente.
-     */
-    public SolicitudServicio crearSolicitud(Cliente cliente,
-                                            TipoEmergencia tipo,
-                                            String descripcion,
-                                            int indiceNodoCliente) {
+
+    public SolicitudServicio crearSolicitud(Cliente cliente, TipoEmergencia tipo, String descripcion, int indiceNodoCliente) {
         if (cliente == null) return null;
-
         int indicePuesto = GrafoCiudad.getInstancia().calcularPuesto(indiceNodoCliente);
-
-        SolicitudServicio solicitud = new SolicitudServicio(
-                cliente, tipo, descripcion, indiceNodoCliente, indicePuesto);
-
+        SolicitudServicio solicitud = new SolicitudServicio( cliente, tipo, descripcion, indiceNodoCliente, indicePuesto);
         PuestoAtencion puesto = GestorRecursos.getInstancia().getPuesto(indicePuesto);
         puesto.encolarSolicitud(solicitud);
-
-        System.out.printf("[GestorSolicitudes] Solicitud creada → cliente=%s | nodo=%s | puesto=%s | emergencia=%s%n",
-                cliente.getNombre(),
-                GrafoCiudad.getInstancia().nombreNodo(indiceNodoCliente),
-                GrafoCiudad.NOMBRES_PUESTOS[indicePuesto],
-                tipo);
-
+        System.out.printf("[GestorSolicitudes] Solicitud creada → cliente=%s | nodo=%s | puesto=%s | emergencia=%s%n", cliente.getNombre(), GrafoCiudad.getInstancia().nombreNodo(indiceNodoCliente), GrafoCiudad.NOMBRES_PUESTOS[indicePuesto],tipo);
         historicoGlobal.agregar(solicitud);
         return solicitud;
     }
@@ -60,17 +45,11 @@ public class GestorSolicitudes {
         return historicoGlobal;
     }
 
-    /**
-     * Genera el CSV del día para un puesto específico.
-     * Incluye columnas TECNICO_ASIGNADO y UNIDAD_ASIGNADA.
-     */
+
     public String generarCsvDia(int indicePuesto) {
 
         System.out.println("[CSV] Iniciando generarCsvDia para puesto " + indicePuesto);
-
-        java.nio.file.Path carpeta = java.nio.file.Paths.get(
-                System.getProperty("user.home"), "Downloads", "reportes_autorescate");
-
+        java.nio.file.Path carpeta = java.nio.file.Paths.get( System.getProperty("user.home"), "Downloads", "reportes_autorescate");
         try {
             java.nio.file.Files.createDirectories(carpeta);
             System.out.println("[CSV] Carpeta destino: " + carpeta.toAbsolutePath());
@@ -83,9 +62,8 @@ public class GestorSolicitudes {
         PuestoAtencion p    = GestorRecursos.getInstancia().getPuesto(indicePuesto);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\uFEFF"); // BOM UTF-8 para Excel
+        sb.append("\uFEFF"); 
 
-        // ── Sección 1 — Solicitudes (con TECNICO_ASIGNADO y UNIDAD_ASIGNADA) ──
         sb.append("SECCION,UUID,PUESTO,ESTADO,CLIENTE,TELEFONO,TIPO_EMERGENCIA,")
           .append("NODO_UBICACION,TECNICO_ASIGNADO,UNIDAD_ASIGNADA,DESCRIPCION,TIMESTAMP\n");
 
@@ -99,25 +77,14 @@ public class GestorSolicitudes {
                 String unidad  = s.getUnidadAsignada() != null
                         ? s.getUnidadAsignada().getCodigo() : "Sin asignar";
 
-                sb.append("SOLICITUD,")
-                  .append(s.getId()).append(",")
-                  .append(esc(nombrePuesto)).append(",")
-                  .append(s.getEstado()).append(",")
-                  .append(esc(s.getCliente().getNombre())).append(",")
-                  .append(esc(s.getCliente().getTelefono())).append(",")
-                  .append(s.getTipoEmergencia()).append(",")
-                  .append(esc(GrafoCiudad.getInstancia().nombreNodo(s.getIndiceNodo()))).append(",")
-                  .append(esc(tecnico)).append(",")
-                  .append(esc(unidad)).append(",")
-                  .append(esc(s.getDescripcion())).append(",")
-                  .append(s.getTimestampFormateado()).append("\n");
+                sb.append("SOLICITUD,").append(s.getId()).append(",").append(esc(nombrePuesto)).append(",").append(s.getEstado()).append(",").append(esc(s.getCliente().getNombre())).append(",")
+                .append(esc(s.getCliente().getTelefono())).append(",").append(s.getTipoEmergencia()).append(",").append(esc(GrafoCiudad.getInstancia().nombreNodo(s.getIndiceNodo()))).append(",").append(esc(tecnico)).append(",").append(esc(unidad)).append(",").append(esc(s.getDescripcion())).append(",").append(s.getTimestampFormateado()).append("\n");
                 totalSolicitudes++;
             }
             nodo = nodo.getSiguiente();
         }
         System.out.println("[CSV] Solicitudes escritas: " + totalSolicitudes);
 
-        // ── Sección 2 — Resumen kits ──────────────────────────────────────────
         sb.append("\nSECCION,PUESTO,KITS_DISPONIBLES,KITS_REPARADOS_HOY,KITS_EN_PILA_MANTENIMIENTO\n");
         int enPila = 0;
         Nodo<Kit> nKit = p.getPilaKitsDañados().getTope();
@@ -129,40 +96,23 @@ public class GestorSolicitudes {
           .append(p.getKitsReparadosHoy()).append(",")
           .append(enPila).append("\n");
 
-        // ── Sección 3 — Detalle kits dañados ─────────────────────────────────
         sb.append("\nSECCION,UUID_KIT,PUESTO,DESCRIPCION,COMPLETO\n");
         Nodo<Kit> nKitDetalle = p.getPilaKitsDañados().getTope();
         while (nKitDetalle != null) {
             Kit k = nKitDetalle.getDato();
-            sb.append("KIT_DAÑADO,")
-              .append(k.getId()).append(",")
-              .append(esc(nombrePuesto)).append(",")
-              .append(esc(k.getDescripcion())).append(",")
-              .append(k.isCompleto()).append("\n");
+            sb.append("KIT_DAÑADO,").append(k.getId()).append(",").append(esc(nombrePuesto)).append(",").append(esc(k.getDescripcion())).append(",").append(k.isCompleto()).append("\n");
             nKitDetalle = nKitDetalle.getSiguiente();
         }
         System.out.println("[CSV] Kits en pila: " + enPila);
 
-        // ── Escribir en disco ─────────────────────────────────────────────────
         try {
-            String fecha = java.time.LocalDate.now()
-                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String nombreArchivo = "reporte_" + nombrePuesto.toLowerCase()
-                                 + "_" + fecha + ".csv";
+            String fecha = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String nombreArchivo = "reporte_" + nombrePuesto.toLowerCase()+ "_" + fecha + ".csv";
             java.nio.file.Path archivo = carpeta.resolve(nombreArchivo);
-
-            java.nio.file.Files.writeString(
-                    archivo,
-                    sb.toString(),
-                    java.nio.charset.StandardCharsets.UTF_8,
-                    java.nio.file.StandardOpenOption.CREATE,
-                    java.nio.file.StandardOpenOption.TRUNCATE_EXISTING);
-
+            java.nio.file.Files.writeString(archivo,sb.toString(),java.nio.charset.StandardCharsets.UTF_8,java.nio.file.StandardOpenOption.CREATE,                    java.nio.file.StandardOpenOption.TRUNCATE_EXISTING);
             System.out.println("[CSV] Archivo escrito exitosamente: " + archivo.toAbsolutePath());
-
             eliminarDelHistorico(indicePuesto);
             p.resetKitsReparadosHoy();
-
             return archivo.toAbsolutePath().toString();
 
         } catch (Exception e) {

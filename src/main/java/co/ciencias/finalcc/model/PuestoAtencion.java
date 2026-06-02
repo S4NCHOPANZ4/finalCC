@@ -13,14 +13,14 @@ public class PuestoAtencion {
 
     public static final int NORTE = 0;
     public static final int SUR   = 1;
-    private final int    indice;
+    private final int indice;
     private final String nombre;
     private int kitsReparadosHoy = 0;
-    private final ColaPrioridad                  solicitudesPendientes;
-    private final Cola<SolicitudServicio>         solicitudesEnEjecucion;
-    private final Pila<Kit>                      pilaKitsDañados;
-    private final ListaEnlazada<UnidadServicio>  unidades;
-    private final ListaEnlazada<Tecnico>         tecnicos;
+    private final ColaPrioridad solicitudesPendientes;
+    private final Cola<SolicitudServicio> solicitudesEnEjecucion;
+    private final Pila<Kit> pilaKitsDañados;
+    private final ListaEnlazada<UnidadServicio> unidades;
+    private final ListaEnlazada<Tecnico> tecnicos;
 
     private int stockKitsManuales;
 
@@ -30,39 +30,35 @@ public class PuestoAtencion {
 
         this.solicitudesPendientes  = new ColaPrioridad();
         this.solicitudesEnEjecucion = new Cola<>();
-        this.pilaKitsDañados        = new Pila<>();
-        this.unidades               = new ListaEnlazada<>();
-        this.tecnicos               = new ListaEnlazada<>();
-        this.stockKitsManuales      = 10;
+        this.pilaKitsDañados = new Pila<>();
+        this.unidades = new ListaEnlazada<>();
+        this.tecnicos = new ListaEnlazada<>();
+        this.stockKitsManuales = 10;
 
         inicializarRecursos();
     }
 
-    // ------------------------------------------------------------------
-    // Operaciones principales
-    // ------------------------------------------------------------------
-
     public boolean atenderSiguiente() {
         if (solicitudesPendientes.esVacia()) return false;
-        if (stockKitsManuales <= 0)          return false;
+        if (stockKitsManuales <= 0) return false;
 
         SolicitudServicio candidata  = null;
-        Tecnico           tec        = null;
-        UnidadServicio    unidad     = null;
+        Tecnico tec = null;
+        UnidadServicio unidad = null;
 
         Nodo<SolicitudServicio> actual = solicitudesPendientes.getCabeza();
         while (actual != null) {
-            SolicitudServicio sol      = actual.getDato();
-            Especialidad      esp      = sol.getTipoEmergencia().getEspecialidad();
-            TipoUnidad        tipoUni  = sol.getTipoEmergencia().getTipoUnidad();
+            SolicitudServicio sol = actual.getDato();
+            Especialidad esp = sol.getTipoEmergencia().getEspecialidad();
+            TipoUnidad tipoUni  = sol.getTipoEmergencia().getTipoUnidad();
 
-            Tecnico        found    = buscarTecnico(esp);
+            Tecnico found = buscarTecnico(esp);
             UnidadServicio foundUni = buscarUnidad(tipoUni);
 
             if (found != null && foundUni != null) {
                 candidata = sol;
-                tec       = found;
-                unidad    = foundUni;
+                tec = found;
+                unidad = foundUni;
                 break;
             }
             actual = actual.getSiguiente();
@@ -144,9 +140,6 @@ public class PuestoAtencion {
     public SolicitudServicio extraerSiguiente() { return solicitudesPendientes.extraer(); }
     public SolicitudServicio verSiguiente()      { return solicitudesPendientes.verFrente(); }
 
-    // ------------------------------------------------------------------
-    // Búsqueda de recursos
-    // ------------------------------------------------------------------
 
     public UnidadServicio buscarUnidad(TipoUnidad tipo) {
         Nodo<UnidadServicio> actual = unidades.getCabeza();
@@ -168,48 +161,26 @@ public class PuestoAtencion {
         return null;
     }
 
-    // ------------------------------------------------------------------
-    // CRUD — Técnicos  (RF-07)
-    // ------------------------------------------------------------------
-
-    /**
-     * Agrega un nuevo técnico al puesto con estado DISPONIBLE.
-     *
-     * @param nombre      identificador/nombre del técnico
-     * @param especialidad especialidad requerida
-     * @return el técnico creado
-     */
     public Tecnico agregarTecnico(String nombre, Especialidad especialidad) {
         Tecnico t = new Tecnico(nombre, especialidad, EstadoTecnico.DISPONIBLE, indice);
         tecnicos.agregar(t);
         return t;
     }
 
-    /**
-     * Edita el nombre y/o la especialidad de un técnico existente buscándolo por id.
-     * No se permite editar un técnico con estado OCUPADA (está en servicio activo).
-     *
-     * @param id           UUID del técnico a editar
-     * @param nuevoNombre  nuevo nombre (null o vacío = sin cambio)
-     * @param nuevaEsp     nueva especialidad (null = sin cambio)
-     * @return true si se encontró y editó, false si no existe o está OCUPADA
-     */
     public boolean editarTecnico(String id, String nuevoNombre, Especialidad nuevaEsp) {
         if (id == null) return false;
         Nodo<Tecnico> actual = tecnicos.getCabeza();
         while (actual != null) {
             Tecnico t = actual.getDato();
             if (t.getId().equals(id)) {
-                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; // en servicio
+                if (t.getEstado() == EstadoTecnico.OCUPADA) return false; 
                 if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-                    // Tecnico.nombre es final → necesitamos reemplazar el nodo
                     Tecnico editado = new Tecnico(
                         nuevoNombre.trim(),
                         nuevaEsp != null ? nuevaEsp : t.getEspecialidad(),
                         t.getEstado(),
                         t.getZona()
                     );
-                    // Preservar el mismo id no es posible (final), usamos el nuevo objeto
                     actual.setDato(editado);
                 } else if (nuevaEsp != null) {
                     Tecnico editado = new Tecnico(
@@ -227,32 +198,13 @@ public class PuestoAtencion {
         return false;
     }
 
-    // ------------------------------------------------------------------
-    // CRUD — Unidades de servicio  (RF-08)
-    // ------------------------------------------------------------------
-
-    /**
-     * Agrega una nueva unidad al puesto con estado DISPONIBLE.
-     *
-     * @param tipo   tipo de unidad
-     * @param codigo código identificador (ej. "N-GRU-04")
-     * @return la unidad creada
-     */
     public UnidadServicio agregarUnidad(TipoUnidad tipo, String codigo) {
         UnidadServicio u = new UnidadServicio(tipo, EstadoUnidad.DISPONIBLE, indice, codigo);
         unidades.agregar(u);
         return u;
     }
 
-    /**
-     * Edita el código y/o tipo de una unidad existente buscándola por id.
-     * No se permite editar una unidad con estado ASIGNADO (está en servicio activo).
-     *
-     * @param id        UUID de la unidad a editar
-     * @param nuevoCod  nuevo código (null o vacío = sin cambio)
-     * @param nuevoTipo nuevo tipo (null = sin cambio)
-     * @return true si se encontró y editó, false si no existe o está ASIGNADO
-     */
+
     public boolean editarUnidad(String id, String nuevoCod, TipoUnidad nuevoTipo) {
         if (id == null) return false;
         Nodo<UnidadServicio> actual = unidades.getCabeza();
@@ -271,23 +223,17 @@ public class PuestoAtencion {
         return false;
     }
 
-    // ------------------------------------------------------------------
-    // Getters
-    // ------------------------------------------------------------------
 
-    public int    getIndice()       { return indice; }
-    public String getNombre()       { return nombre; }
-    public int    getContadorKits() { return stockKitsManuales; }
+    public int getIndice(){ return indice; }
+    public String getNombre(){ return nombre; }
+    public int getContadorKits(){ return stockKitsManuales; }
 
-    public ColaPrioridad                 getSolicitudesPendientes()   { return solicitudesPendientes; }
-    public Cola<SolicitudServicio>       getSolicitudesEnEjecucion()  { return solicitudesEnEjecucion; }
-    public Pila<Kit>                     getPilaKitsDañados()         { return pilaKitsDañados; }
-    public ListaEnlazada<UnidadServicio> getUnidades()                { return unidades; }
-    public ListaEnlazada<Tecnico>        getTecnicos()                { return tecnicos; }
+    public ColaPrioridad getSolicitudesPendientes() { return solicitudesPendientes; }
+    public Cola<SolicitudServicio> getSolicitudesEnEjecucion()  { return solicitudesEnEjecucion; }
+    public Pila<Kit> getPilaKitsDañados() { return pilaKitsDañados; }
+    public ListaEnlazada<UnidadServicio> getUnidades() { return unidades; }
+    public ListaEnlazada<Tecnico> getTecnicos() { return tecnicos; }
 
-    // ------------------------------------------------------------------
-    // Cierre de día
-    // ------------------------------------------------------------------
 
     public void cerrarDia() {
         while (!solicitudesEnEjecucion.esVacia()) {
@@ -306,28 +252,24 @@ public class PuestoAtencion {
         kitsReparadosHoy = 0;
     }
 
-    // ------------------------------------------------------------------
-    // Inicialización de recursos
-    // ------------------------------------------------------------------
 
     private void inicializarRecursos() {
-        String p = nombre.substring(0, 1); // "N" o "S"
+        String p = nombre.substring(0, 1); 
 
         for (int i = 1; i <= 3; i++)
-            unidades.agregar(new UnidadServicio(TipoUnidad.GRUA,                EstadoUnidad.DISPONIBLE, indice, p + "-GRU-" + fmt(i)));
+            unidades.agregar(new UnidadServicio(TipoUnidad.GRUA, EstadoUnidad.DISPONIBLE, indice, p + "-GRU-" + fmt(i)));
         for (int i = 1; i <= 5; i++)
-            unidades.agregar(new UnidadServicio(TipoUnidad.MOTO,                EstadoUnidad.DISPONIBLE, indice, p + "-MOT-" + fmt(i)));
+            unidades.agregar(new UnidadServicio(TipoUnidad.MOTO, EstadoUnidad.DISPONIBLE, indice, p + "-MOT-" + fmt(i)));
         for (int i = 1; i <= 3; i++)
             unidades.agregar(new UnidadServicio(TipoUnidad.CAMIONETA_ASISTENCIA, EstadoUnidad.DISPONIBLE, indice, p + "-CAM-" + fmt(i)));
         for (int i = 1; i <= 3; i++)
-            unidades.agregar(new UnidadServicio(TipoUnidad.VEHICULO_LIVIANO,    EstadoUnidad.DISPONIBLE, indice, p + "-VLI-" + fmt(i)));
-
+            unidades.agregar(new UnidadServicio(TipoUnidad.VEHICULO_LIVIANO, EstadoUnidad.DISPONIBLE, indice, p + "-VLI-" + fmt(i)));
         for (int i = 1; i <= 3; i++)
-            tecnicos.agregar(new Tecnico(p + "-BRI-" + fmt(i), BRIGADISTA,     EstadoTecnico.DISPONIBLE, indice));
+            tecnicos.agregar(new Tecnico(p + "-BRI-" + fmt(i), BRIGADISTA,EstadoTecnico.DISPONIBLE, indice));
         for (int i = 1; i <= 4; i++)
             tecnicos.agregar(new Tecnico(p + "-SEG-" + fmt(i), SEGURIDAD_RUTA, EstadoTecnico.DISPONIBLE, indice));
         for (int i = 1; i <= 7; i++)
-            tecnicos.agregar(new Tecnico(p + "-HAN-" + fmt(i), HANDYMAN,       EstadoTecnico.DISPONIBLE, indice));
+            tecnicos.agregar(new Tecnico(p + "-HAN-" + fmt(i), HANDYMAN, EstadoTecnico.DISPONIBLE, indice));
     }
 
     private static String fmt(int n) {

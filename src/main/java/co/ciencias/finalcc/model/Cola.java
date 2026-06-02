@@ -38,14 +38,14 @@ public class Cola<T> {
 
     public T desencolarUltimo() {
     if (esVacia()) return null;
-    if (frente == fin) {          // un solo elemento
+    if (frente == fin) {          
         T dato = frente.getDato();
         frente = null;
         fin    = null;
         tamanio--;
         return dato;
     }
-    // Avanzar hasta el penúltimo
+
     Nodo<T> actual = frente;
     while (actual.getSiguiente() != fin) {
         actual = actual.getSiguiente();

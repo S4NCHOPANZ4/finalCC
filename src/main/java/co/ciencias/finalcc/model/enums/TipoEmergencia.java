@@ -23,10 +23,6 @@ public enum TipoEmergencia {
     }
 
     public int getValor() { return valor; }
-
-    /** Especialidad del técnico requerida para este tipo de emergencia. */
     public Especialidad getEspecialidad() { return especialidad; }
-
-    /** Tipo de unidad vehicular requerida para este tipo de emergencia. */
     public TipoUnidad getTipoUnidad() { return tipoUnidad; }
 }
