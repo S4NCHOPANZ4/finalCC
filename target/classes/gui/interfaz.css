@@ -18,7 +18,6 @@ body {
     overflow: hidden;
 }
 
-/* ── Panel de formulario ── */
 .form-panel {
     width: 270px;
     min-width: 240px;
@@ -103,7 +102,6 @@ body {
 }
 .btn-registrar:hover { background: #e5e5e5; }
 
-/* ── Dashboard ── */
 .dashboard {
     flex: 1;
     display: flex;
@@ -111,18 +109,16 @@ body {
     overflow: hidden;
 }
 
-/* ── Card — contenedor posicionado para overlay ── */
 .card {
     flex: 1;
     background: #111111;
     border-right: 1px solid #222222;
-    position: relative;          /* ancla el overlay */
+    position: relative;          
     overflow: hidden;
     height: 100vh;
 }
 .card:last-child { border-right: none; }
 
-/* scroll solo en el contenido normal */
 .card-inner {
     height: 100%;
     overflow-y: auto;
@@ -132,7 +128,6 @@ body {
     gap: 12px;
 }
 
-/* barra superior con título + botón gestionar */
 .card-topbar {
     display: flex;
     align-items: center;
@@ -165,7 +160,6 @@ body {
 }
 .btn-gestionar:hover { background: #2a2a2a; color: #ffffff; }
 
-/* ── Métricas ── */
 .metric-group { display: flex; gap: 8px; }
 
 .metric {
@@ -184,7 +178,6 @@ body {
 }
 .metric span:last-child { font-weight: 800; font-size: .7rem; color: #facc15; }
 
-/* ── En ejecución ── */
 .ejecucion-lista   { font-size: 0.78rem; color: #22c55e; line-height: 1.5; }
 .ejecucion-item    {
     display: flex; flex-direction: column; gap: 5px;
@@ -203,7 +196,6 @@ body {
 .tag-tecnico { color: #facc15; font-weight: 600; }
 .tag-unidad  { color: #38bdf8; font-weight: 600; }
 
-/* ── Staff panel ── */
 .staff-panel {
     background: #1a1a1a; border: 1px solid #2a2a2a;
     border-radius: 6px; padding: 10px 12px;
@@ -220,7 +212,6 @@ body {
 .staff-row span:first-child { color: #aaaaaa; }
 .staff-count { font-weight: 800; font-size: 0.9rem; color: #22c55e; }
 
-/* ── Vehículos panel ── */
 .vehicles-panel {
     background: #1a1a1a; border: 1px solid #2a2a2a;
     border-radius: 6px; padding: 10px 12px;
@@ -237,7 +228,6 @@ body {
 .vehicle-row span:first-child { color: #aaaaaa; }
 .vehicle-count { font-weight: 800; font-size: 0.9rem; color: #38bdf8; }
 
-/* ── Botones de acción ── */
 .actions-panel {
     display: flex;
     gap: 6px;
@@ -279,7 +269,6 @@ body {
 .actions-fila-dia .btn-revertir  { flex: 0 0 auto; min-width: 80px; }
 .actions-fila-dia .btn-cerrar-dia { flex: 1; }
 
-/* ── Listas cola / pila ── */
 .lists-container { display: flex; gap: 8px; flex: 1; min-height: 0; }
 
 .list-box {
@@ -305,13 +294,11 @@ body {
 #cola-norte li, #cola-sur li { color: #f0f0f0; }
 .pila-kits li { color: #f87171; }
 
-/* ═══════════════════════════════════════════════════════════════════
-   OVERLAY CRUD
-   ═══════════════════════════════════════════════════════════════════ */
+
 
 .crud-overlay {
     position: absolute;
-    inset: 0;                        /* cubre toda la card */
+    inset: 0;                     
     background: #0f0f0f;
     z-index: 10;
     display: flex;
@@ -350,7 +337,6 @@ body {
 }
 .crud-close:hover { background: #dc2626; color: #ffffff; border-color: #dc2626; }
 
-/* ── Tabs ── */
 .crud-tabs {
     display: flex;
     gap: 6px;
@@ -374,7 +360,6 @@ body {
 .crud-tab.active,
 .crud-tab:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
 
-/* ── Panel interior (lista + formulario de agregar) ── */
 .crud-panel {
     display: flex;
     flex-direction: column;
@@ -384,7 +369,6 @@ body {
     overflow: hidden;
 }
 
-/* ── Lista de registros ── */
 .crud-lista {
     flex: 1;
     overflow-y: auto;
@@ -394,7 +378,6 @@ body {
     min-height: 0;
 }
 
-/* ── Fila de un registro ── */
 .crud-row {
     display: flex;
     align-items: center;
@@ -480,7 +463,6 @@ body {
 .crud-btn-del:hover:not(:disabled) { background: #dc2626; color: #ffffff; border-color: #dc2626; }
 .crud-btn-del:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* ── Formulario de agregar ── */
 .crud-form {
     display: flex;
     flex-direction: column;
@@ -538,7 +520,6 @@ body {
 }
 .crud-btn-add:hover { background: #16a34a; }
 
-/* ── Etiqueta del modal ── */
 .crud-label {
     font-size: 0.65rem;
     font-weight: 700;
@@ -547,9 +528,6 @@ body {
     color: #888;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   MODAL DE EDICIÓN
-   ═══════════════════════════════════════════════════════════════════ */
 
 #edit-modal {
     position: fixed;
@@ -573,7 +551,6 @@ body {
     box-shadow: 0 8px 32px rgba(0,0,0,0.7);
 }
 
-/* ── Toast ── */
 #toast {
     position: fixed;
     bottom: 20px;
@@ -593,7 +570,6 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 #toast.ok { background: #16a34a; }
-/* ── Botón Reparar inline en fila de vehículo ── */
 .crud-btn-reparar-fila {
     padding: 3px 8px;
     border: 1px solid #b45309;

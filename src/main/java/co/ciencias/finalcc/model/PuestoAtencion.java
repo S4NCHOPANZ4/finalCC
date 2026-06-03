@@ -90,7 +90,6 @@ public class PuestoAtencion {
             sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
         }
         if (sol.getUnidadAsignada() != null) {
-            // 50% de probabilidad de que el vehiculo entre en mantenimiento
             boolean entraMantenimiento = Math.random() < 0.5;
             if (entraMantenimiento) {
                 sol.getUnidadAsignada().setEstado(EstadoUnidad.EN_MANTENIMIENTO);
@@ -106,12 +105,6 @@ public class PuestoAtencion {
         return true;
     }
 
-    /**
-     * Repara el vehiculo con el id dado si está en EN_MANTENIMIENTO
-     * y lo devuelve a DISPONIBLE.
-     * @param id UUID del vehículo a reparar
-     * @return true si se reparó, false si no se encontró o no estaba en mantenimiento
-     */
     public boolean repararVehiculo(String id) {
         if (id == null) return false;
         Nodo<UnidadServicio> actual = unidades.getCabeza();
@@ -209,12 +202,7 @@ public class PuestoAtencion {
                     );
                     actual.setDato(editado);
                 } else if (nuevaEsp != null) {
-                    Tecnico editado = new Tecnico(
-                        t.getNombre(),
-                        nuevaEsp,
-                        t.getEstado(),
-                        t.getZona()
-                    );
+                    Tecnico editado = new Tecnico(t.getNombre(),nuevaEsp, t.getEstado(),t.getZona());
                     actual.setDato(editado);
                 }
                 return true;
@@ -329,6 +317,10 @@ public class PuestoAtencion {
     }
 
     private static String fmt(int n) {
-        return n < 10 ? "0" + n : String.valueOf(n);
+        if (n < 10) {
+            return "0" + n;
+        } else {
+            return String.valueOf(n);
+        }
     }
 }

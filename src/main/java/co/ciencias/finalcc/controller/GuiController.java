@@ -83,9 +83,7 @@ public class GuiController {
         try {
             boolean ok = GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).repararVehiculo(vehiculoId);
             String nombrePuesto = GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).getNombre();
-            String msg = ok
-                ? "Vehiculo reparado y disponible en " + nombrePuesto
-                : "Vehiculo no encontrado o no esta en mantenimiento";
+            String msg = ok ? "Vehiculo reparado y disponible en " + nombrePuesto : "Vehiculo no encontrado o no esta en mantenimiento";
             String script = "mostrarToast('" + esc(msg) + "'," + ok + ");";
             Platform.runLater(() -> {
                 try { Gui.getEngine().executeScript(script); } catch (Exception e) {}
@@ -185,11 +183,7 @@ public class GuiController {
             SolicitudServicio sol = nodoEj.getDato();
             String tec = sol.getTecnicoAsignado() != null ? sol.getTecnicoAsignado().getNombre() : "Sin tecnico";
             String uni = sol.getUnidadAsignada()  != null ? sol.getUnidadAsignada().getCodigo()  : "Sin unidad";
-            ejecucion.append("{")
-                     .append("\"cliente\":\"").append(esc(sol.getCliente().getNombre())).append("\",")
-                     .append("\"tecnico\":\"").append(esc(tec)).append("\",")
-                     .append("\"unidad\":\"").append(esc(uni)).append("\"")
-                     .append("}");
+            ejecucion.append("{").append("\"cliente\":\"").append(esc(sol.getCliente().getNombre())).append("\",").append("\"tecnico\":\"").append(esc(tec)).append("\",").append("\"unidad\":\"").append(esc(uni)).append("\"").append("}");
             primero = false;
             nodoEj  = nodoEj.getSiguiente();
         }
@@ -200,9 +194,9 @@ public class GuiController {
         while (nodoTec != null) {
             Tecnico t = nodoTec.getDato();
             if (t.getEstado() == EstadoTecnico.DISPONIBLE) {
-                if (t.getEspecialidad() == Especialidad.BRIGADISTA)    bri++;
+                if (t.getEspecialidad() == Especialidad.BRIGADISTA) bri++;
                 if (t.getEspecialidad() == Especialidad.SEGURIDAD_RUTA) seg++;
-                if (t.getEspecialidad() == Especialidad.HANDYMAN)       han++;
+                if (t.getEspecialidad() == Especialidad.HANDYMAN) han++;
             }
             nodoTec = nodoTec.getSiguiente();
         }
@@ -212,10 +206,10 @@ public class GuiController {
         while (nodoUni != null) {
             UnidadServicio u = nodoUni.getDato();
             if (u.getEstado() == EstadoUnidad.DISPONIBLE) {
-                if (u.getTipo() == TipoUnidad.GRUA)                  vGrua++;
-                if (u.getTipo() == TipoUnidad.MOTO)                  vMoto++;
-                if (u.getTipo() == TipoUnidad.CAMIONETA_ASISTENCIA)  vCam++;
-                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO)      vLiv++;
+                if (u.getTipo() == TipoUnidad.GRUA) vGrua++;
+                if (u.getTipo() == TipoUnidad.MOTO) vMoto++;
+                if (u.getTipo() == TipoUnidad.CAMIONETA_ASISTENCIA) vCam++;
+                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO) vLiv++;
             }
             nodoUni = nodoUni.getSiguiente();
         }

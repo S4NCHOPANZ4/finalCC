@@ -55,8 +55,7 @@ public class JSBridge {
     }
 
 
-    public void editarTecnico(String puestoId, String id,
-                               String nuevoNombre, String nuevaEsp) {
+    public void editarTecnico(String puestoId, String id, String nuevoNombre, String nuevaEsp) {
         try { controller.editarTecnico(puestoId, id, nuevoNombre, nuevaEsp); }
         catch (Exception e) {}
     }
@@ -68,8 +67,7 @@ public class JSBridge {
     }
 
 
-    public void editarVehiculo(String puestoId, String id,
-                                String nuevoCod, String nuevoTipo) {
+    public void editarVehiculo(String puestoId, String id, String nuevoCod, String nuevoTipo) {
         try { controller.editarVehiculo(puestoId, id, nuevoCod, nuevoTipo); }
         catch (Exception e) {}
     }
