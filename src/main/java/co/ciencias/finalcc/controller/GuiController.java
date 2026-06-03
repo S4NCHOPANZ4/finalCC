@@ -55,7 +55,7 @@ public class GuiController {
             int maxNodo = GrafoCiudad.getInstancia().getCantidadNodos() - 1;
             if (idx < 0) idx = 0;
             if (idx > maxNodo) idx = maxNodo;
-            GestorSolicitudes.getInstancia().crearSolicitud( cliente, TipoEmergencia.valueOf(tipo.trim()), descripcion == null ? "" : descripcion, idx);
+            GestorSolicitudes.getInstancia().crearSolicitud(cliente, TipoEmergencia.valueOf(tipo.trim()), descripcion == null ? "" : descripcion, idx);
         } catch (Exception e) {}
     }
 
@@ -79,6 +79,19 @@ public class GuiController {
         catch (Exception e) {}
     }
 
+    public void repararVehiculo(String puestoId, String vehiculoId) {
+        try {
+            boolean ok = GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).repararVehiculo(vehiculoId);
+            String nombrePuesto = GestorRecursos.getInstancia().getPuesto(indiceDe(puestoId)).getNombre();
+            String msg = ok
+                ? "Vehiculo reparado y disponible en " + nombrePuesto
+                : "Vehiculo no encontrado o no esta en mantenimiento";
+            String script = "mostrarToast('" + esc(msg) + "'," + ok + ");";
+            Platform.runLater(() -> {
+                try { Gui.getEngine().executeScript(script); } catch (Exception e) {}
+            });
+        } catch (Exception e) {}
+    }
 
     public void agregarTecnico(String puestoId, String nombre, String especialidad) {
         try {
@@ -142,22 +155,17 @@ public class GuiController {
             }
             final String scriptFinal = script;
             Platform.runLater(() -> {
-                try { 
-                    Gui.getEngine().executeScript(scriptFinal); 
-                } catch (Exception e) {}
+                try { Gui.getEngine().executeScript(scriptFinal); } catch (Exception e) {}
             });
         } catch (Exception e) {
             String raw = e.getMessage();
             String msg = raw == null ? "error desconocido" : raw.replace("\\", "\\\\").replace("'", "\\'");
             final String msgFinal = msg;
             Platform.runLater(() -> {
-                try { 
-                    Gui.getEngine().executeScript("onDiaCerrado(false, 'ERROR: " + msgFinal + "');");
-                } catch (Exception ex) {}
+                try { Gui.getEngine().executeScript("onDiaCerrado(false, 'ERROR: " + msgFinal + "');"); } catch (Exception ex) {}
             });
         }
     }
-
 
     private void empujarEstado(String id, int idx) {
         try {
@@ -175,34 +183,26 @@ public class GuiController {
         while (nodoEj != null) {
             if (!primero) ejecucion.append(",");
             SolicitudServicio sol = nodoEj.getDato();
-            String tec = "";
-            if (sol.getTecnicoAsignado() != null) {
-                tec = sol.getTecnicoAsignado().getNombre();
-            } else {
-                tec = "Sin tecnico";
-            }
-            String uni = "";
-            if (sol.getUnidadAsignada() != null) {
-                uni = sol.getUnidadAsignada().getCodigo();
-            } else {
-                uni = "Sin unidad";
-            }
-            ejecucion.append("{").append("\"cliente\":\"").append(esc(sol.getCliente().getNombre())).append("\",").append("\"tecnico\":\"").append(esc(tec)).append("\",").append("\"unidad\":\"").append(esc(uni)).append("\"").append("}");
+            String tec = sol.getTecnicoAsignado() != null ? sol.getTecnicoAsignado().getNombre() : "Sin tecnico";
+            String uni = sol.getUnidadAsignada()  != null ? sol.getUnidadAsignada().getCodigo()  : "Sin unidad";
+            ejecucion.append("{")
+                     .append("\"cliente\":\"").append(esc(sol.getCliente().getNombre())).append("\",")
+                     .append("\"tecnico\":\"").append(esc(tec)).append("\",")
+                     .append("\"unidad\":\"").append(esc(uni)).append("\"")
+                     .append("}");
             primero = false;
             nodoEj  = nodoEj.getSiguiente();
         }
         ejecucion.append("]");
 
-        int bri = 0;
-        int seg = 0;
-        int han = 0;
+        int bri = 0, seg = 0, han = 0;
         Nodo<Tecnico> nodoTec = p.getTecnicos().getCabeza();
         while (nodoTec != null) {
             Tecnico t = nodoTec.getDato();
             if (t.getEstado() == EstadoTecnico.DISPONIBLE) {
-                if (t.getEspecialidad() == Especialidad.BRIGADISTA) bri++;
+                if (t.getEspecialidad() == Especialidad.BRIGADISTA)    bri++;
                 if (t.getEspecialidad() == Especialidad.SEGURIDAD_RUTA) seg++;
-                if (t.getEspecialidad() == Especialidad.HANDYMAN) han++;
+                if (t.getEspecialidad() == Especialidad.HANDYMAN)       han++;
             }
             nodoTec = nodoTec.getSiguiente();
         }
@@ -212,10 +212,10 @@ public class GuiController {
         while (nodoUni != null) {
             UnidadServicio u = nodoUni.getDato();
             if (u.getEstado() == EstadoUnidad.DISPONIBLE) {
-                if (u.getTipo() == TipoUnidad.GRUA) vGrua++;
-                if (u.getTipo() == TipoUnidad.MOTO) vMoto++;
-                if (u.getTipo() == TipoUnidad.CAMIONETA_ASISTENCIA) vCam++;
-                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO) vLiv++;
+                if (u.getTipo() == TipoUnidad.GRUA)                  vGrua++;
+                if (u.getTipo() == TipoUnidad.MOTO)                  vMoto++;
+                if (u.getTipo() == TipoUnidad.CAMIONETA_ASISTENCIA)  vCam++;
+                if (u.getTipo() == TipoUnidad.VEHICULO_LIVIANO)      vLiv++;
             }
             nodoUni = nodoUni.getSiguiente();
         }
@@ -225,7 +225,8 @@ public class GuiController {
         boolean primeroCola = true;
         while (nodoCola != null) {
             if (!primeroCola) cola.append(",");
-            String item = nodoCola.getDato().getCliente().getNombre() + " (" + nodoCola.getDato().getTipoEmergencia().name() + ")";
+            String item = nodoCola.getDato().getCliente().getNombre()
+                        + " (" + nodoCola.getDato().getTipoEmergencia().name() + ")";
             cola.append("\"").append(esc(item)).append("\"");
             primeroCola = false;
             nodoCola = nodoCola.getSiguiente();
@@ -251,7 +252,12 @@ public class GuiController {
         while (nt != null) {
             if (!pt) tecLista.append(",");
             Tecnico t = nt.getDato();
-            tecLista.append("{").append("\"id\":\"").append(esc(t.getId())).append("\",").append("\"nombre\":\"").append(esc(t.getNombre())).append("\",").append("\"especialidad\":\"").append(t.getEspecialidad().name()).append("\",").append("\"estado\":\"").append(t.getEstado().name()).append("\"").append("}");
+            tecLista.append("{")
+                    .append("\"id\":\"").append(esc(t.getId())).append("\",")
+                    .append("\"nombre\":\"").append(esc(t.getNombre())).append("\",")
+                    .append("\"especialidad\":\"").append(t.getEspecialidad().name()).append("\",")
+                    .append("\"estado\":\"").append(t.getEstado().name()).append("\"")
+                    .append("}");
             pt = false;
             nt = nt.getSiguiente();
         }
@@ -263,23 +269,27 @@ public class GuiController {
         while (nv != null) {
             if (!pv) vehLista.append(",");
             UnidadServicio u = nv.getDato();
-            vehLista.append("{").append("\"id\":\"").append(esc(u.getId())).append("\",").append("\"codigo\":\"").append(esc(u.getCodigo())).append("\",").append("\"tipo\":\"").append(u.getTipo().name()).append("\",").append("\"estado\":\"").append(u.getEstado().name()).append("\"").append("}");
+            vehLista.append("{")
+                    .append("\"id\":\"").append(esc(u.getId())).append("\",")
+                    .append("\"codigo\":\"").append(esc(u.getCodigo())).append("\",")
+                    .append("\"tipo\":\"").append(u.getTipo().name()).append("\",")
+                    .append("\"estado\":\"").append(u.getEstado().name()).append("\"")
+                    .append("}");
             pv = false;
             nv = nv.getSiguiente();
         }
         vehLista.append("]");
 
-        return "{\"kits\":" + p.getContadorKits()
-             + ",\"ejecucion\":"    + ejecucion
+        return "{\"kits\":"          + p.getContadorKits()
+             + ",\"ejecucion\":"     + ejecucion
              + ",\"personal\":{\"bri\":" + bri + ",\"seg\":" + seg + ",\"han\":" + han + "}"
-             + ",\"vehiculos\":{\"grua\":" + vGrua + ",\"moto\":" + vMoto + ",\"cam\":"  + vCam  + ",\"liv\":"  + vLiv  + "}"
-             + ",\"cola\":" + cola
-             + ",\"pila\":" + pila
+             + ",\"vehiculos\":{\"grua\":" + vGrua + ",\"moto\":" + vMoto + ",\"cam\":" + vCam + ",\"liv\":" + vLiv + "}"
+             + ",\"cola\":"          + cola
+             + ",\"pila\":"          + pila
              + ",\"tecnicosLista\":" + tecLista
              + ",\"vehiculosLista\":" + vehLista
              + "}";
     }
-
 
     private int indiceDe(String id) {
         if (id == null) return 0;
@@ -290,6 +300,7 @@ public class GuiController {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
+                .replace("'",  "\\'")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");

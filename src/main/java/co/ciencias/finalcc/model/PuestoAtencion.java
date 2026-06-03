@@ -90,7 +90,13 @@ public class PuestoAtencion {
             sol.getTecnicoAsignado().setEstado(EstadoTecnico.DISPONIBLE);
         }
         if (sol.getUnidadAsignada() != null) {
-            sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
+            // 50% de probabilidad de que el vehiculo entre en mantenimiento
+            boolean entraMantenimiento = Math.random() < 0.5;
+            if (entraMantenimiento) {
+                sol.getUnidadAsignada().setEstado(EstadoUnidad.EN_MANTENIMIENTO);
+            } else {
+                sol.getUnidadAsignada().setEstado(EstadoUnidad.DISPONIBLE);
+            }
         }
 
         Kit kitGastado = new Kit("Gastado en: " + sol.getCliente().getNombre());
@@ -98,6 +104,26 @@ public class PuestoAtencion {
         pilaKitsDañados.push(kitGastado);
 
         return true;
+    }
+
+    /**
+     * Repara el vehiculo con el id dado si está en EN_MANTENIMIENTO
+     * y lo devuelve a DISPONIBLE.
+     * @param id UUID del vehículo a reparar
+     * @return true si se reparó, false si no se encontró o no estaba en mantenimiento
+     */
+    public boolean repararVehiculo(String id) {
+        if (id == null) return false;
+        Nodo<UnidadServicio> actual = unidades.getCabeza();
+        while (actual != null) {
+            UnidadServicio u = actual.getDato();
+            if (u.getId().equals(id) && u.getEstado() == EstadoUnidad.EN_MANTENIMIENTO) {
+                u.setEstado(EstadoUnidad.DISPONIBLE);
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
     }
 
     public boolean revertirUltimaEjecucion() {
@@ -244,7 +270,7 @@ public class PuestoAtencion {
         while (actual != null) {
             UnidadServicio u = actual.getDato();
             if (u.getId().equals(id)) {
-                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false; 
+                if (u.getEstado() == EstadoUnidad.ASIGNADO) return false;   
                 unidades.eliminar(u);
                 return true;
             }

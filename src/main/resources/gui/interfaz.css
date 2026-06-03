@@ -593,3 +593,19 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 #toast.ok { background: #16a34a; }
+/* ── Botón Reparar inline en fila de vehículo ── */
+.crud-btn-reparar-fila {
+    padding: 3px 8px;
+    border: 1px solid #b45309;
+    background: #1c1007;
+    color: #f59e0b;
+    font-size: 0.82rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.crud-btn-reparar-fila:hover {
+    background: #b45309;
+    color: #ffffff;
+}

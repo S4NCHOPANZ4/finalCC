@@ -83,4 +83,9 @@ public class JSBridge {
         try { controller.eliminarVehiculo(puestoId, id); }
         catch (Exception e) {}
     }
+
+    public void repararVehiculo(String puestoId, String vehiculoId) {
+        try { controller.repararVehiculo(puestoId, vehiculoId); }
+        catch (Exception e) {}
+    }
 }

@@ -489,8 +489,8 @@ document.getElementById("edit-confirm-btn").addEventListener("click", function()
 
 var LABEL_ESP = { "BRIGADISTA":"Brigadista", "SEGURIDAD_RUTA":"Seg. Ruta", "HANDYMAN":"Handyman" };
 var LABEL_VEH = { "GRUA":"Grua", "MOTO":"Moto", "CAMIONETA_ASISTENCIA":"Camioneta", "VEHICULO_LIVIANO":"Veh. Liviano" };
-var LABEL_EST_TEC = { "DISPONIBLE":"✓", "OCUPADA":"⚙", "EN_MANTENIMIENTO":"⚠" };
-var LABEL_EST_VEH = { "DISPONIBLE":"✓", "ASIGNADO":"⚙", "EN_MANTENIMIENTO":"⚠" };
+var LABEL_EST_TEC = { "DISPONIBLE":"✓", "OCUPADA":"⚙", "EN_MANTENIMIENTO":" " };
+var LABEL_EST_VEH = { "DISPONIBLE":"✓", "ASIGNADO":"⚙", "EN_MANTENIMIENTO":" " };
 
 function actualizarPuesto(id, d) {
     try {
@@ -623,23 +623,71 @@ function renderListaVehiculos(puesto, lista) {
 
     for (var i = 0; i < lista.length; i++) {
         var v   = lista[i];
-        var row = crearFilaCrud(
+        var row = crearFilaVehiculo(
+            puesto,
             v.id,
             v.id.substring(0, 8).toUpperCase(),
             v.codigo,
             LABEL_VEH[v.tipo] || v.tipo,
             v.estado,
             LABEL_EST_VEH[v.estado] || v.estado,
-            v.estado === "ASIGNADO",     // bloqueado si está en servicio
-            (function(p, id, codigo, tipo) {
-                return function() { abrirModal(p, "veh", id, codigo, tipo); };
-            })(puesto, v.id, v.codigo, v.tipo),
-            (function(p, id, codigo) {
-                return function() { eliminarRecurso(p, "veh", id, codigo); };
-            })(puesto, v.id, v.codigo)
+            v.tipo
         );
         contenedor.appendChild(row);
     }
+}
+
+function crearFilaVehiculo(puesto, id, idCorto, codigo, tipoLabel, estado, estadoLabel, tipoRaw) {
+    var row = document.createElement("div");
+    row.className = "crud-row";
+
+    var estadoClass = "crud-estado-disp";
+    if (estado === "ASIGNADO")         estadoClass = "crud-estado-ocup";
+    if (estado === "EN_MANTENIMIENTO") estadoClass = "crud-estado-mant";
+
+    row.innerHTML =
+        "<span class='crud-row-id'>"     + idCorto    + "</span>" +
+        "<span class='crud-row-nombre'>" + codigo     + "</span>" +
+        "<span class='crud-row-tipo'>"   + tipoLabel  + "</span>" +
+        "<span class='crud-estado " + estadoClass + "'>" + estadoLabel + " " + estado + "</span>";
+
+    var bloqueado = (estado === "ASIGNADO");
+
+    // Botón Editar
+    var btnEdit = document.createElement("button");
+    btnEdit.className = "crud-btn-edit";
+    btnEdit.textContent = "Editar";
+    btnEdit.disabled = bloqueado;
+    if (bloqueado) btnEdit.title = "No se puede editar: recurso en servicio activo";
+    btnEdit.addEventListener("click", (function(p, vid, vcod, vtipo) {
+        return function() { abrirModal(p, "veh", vid, vcod, vtipo); };
+    })(puesto, id, codigo, tipoRaw));
+    row.appendChild(btnEdit);
+
+    // Botón Reparar (solo visible si está EN_MANTENIMIENTO)
+    if (estado === "EN_MANTENIMIENTO") {
+        var btnRep = document.createElement("button");
+        btnRep.className = "crud-btn-reparar-fila";
+        btnRep.textContent = "Reparar";
+        btnRep.title = "Reparar este vehículo";
+        btnRep.addEventListener("click", (function(p, vid) {
+            return function() { llamarBridge("repararVehiculo", [p, vid]); mostrarToast("Vehículo reparado.", true); };
+        })(puesto, id));
+        row.appendChild(btnRep);
+    }
+
+    // Botón Eliminar
+    var btnDel = document.createElement("button");
+    btnDel.className = "crud-btn-del";
+    btnDel.textContent = "✕";
+    btnDel.disabled = bloqueado;
+    if (bloqueado) btnDel.title = "No se puede eliminar: recurso en servicio activo";
+    btnDel.addEventListener("click", (function(p, vid, vcod) {
+        return function() { eliminarRecurso(p, "veh", vid, vcod); };
+    })(puesto, id, codigo));
+    row.appendChild(btnDel);
+
+    return row;
 }
 
 /**
